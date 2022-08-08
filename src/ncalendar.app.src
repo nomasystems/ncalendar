@@ -1,0 +1,8 @@
+{application, ncalendar, [
+    {description,
+        "An OTP library for the manipulation of a binary representation of dates and times"},
+    {vsn, "0.0.1"},
+    {registered, []},
+    {applications, [kernel, stdlib]},
+    {env, []}
+]}.
