@@ -63,7 +63,7 @@ is_valid(Value) ->
         Year = erlang:list_to_integer([Y1, Y2, Y3, Y4]),
         Month = erlang:list_to_integer([Mo1, Mo2]),
         Day = erlang:list_to_integer([D1, D2]),
-        ncalendar_util:is_valid_date({Year, Month, Day}),
+        true = ncalendar_util:is_valid_date({Year, Month, Day}),
         Hour = erlang:list_to_integer([H1, H2]),
         Min = erlang:list_to_integer([Mi1, Mi2]),
         Sec = erlang:list_to_integer([S1, S2]),
