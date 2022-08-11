@@ -26,6 +26,8 @@
 %%%-----------------------------------------------------------------------------
 %%% EXTERNAL EXPORTS
 %%%-----------------------------------------------------------------------------
+from_datetime({Date, Time, <<"Z">>}) ->
+    from_datetime({Date, Time, +0000});
 from_datetime({{Year, Month, Day}, {Hour, Min, Sec}, +0000}) ->
     erlang:list_to_binary([
         pad(4, Year),
@@ -59,7 +61,7 @@ is_valid(Value) ->
         [Y1, Y2, Y3, Y4, Mo1, Mo2, D1, D2, $T, H1, H2, Mi1, Mi2, S1, S2 | TZ] = erlang:binary_to_list(
             Value
         ),
-        true = ncalendar_util:is_valid_timezone(erlang:list_to_integer(TZ)),
+        true = ncalendar_util:is_valid_timezone(erlang:list_to_integer(resolve_timezone_alias(TZ))),
         Year = erlang:list_to_integer([Y1, Y2, Y3, Y4]),
         Month = erlang:list_to_integer([Mo1, Mo2]),
         Day = erlang:list_to_integer([D1, D2]),
@@ -78,7 +80,7 @@ to_datetime(Value) ->
         [Y1, Y2, Y3, Y4, Mo1, Mo2, D1, D2, $T, H1, H2, Mi1, Mi2, S1, S2 | TZ] = erlang:binary_to_list(
             Value
         ),
-        Timezone = erlang:list_to_integer(TZ),
+        Timezone = erlang:list_to_integer(resolve_timezone_alias(TZ)),
         Year = erlang:list_to_integer([Y1, Y2, Y3, Y4]),
         Month = erlang:list_to_integer([Mo1, Mo2]),
         Day = erlang:list_to_integer([D1, D2]),
@@ -128,7 +130,7 @@ format_timezone(Val) when Val > 9 ->
 format_timezone(Val) when Val > 0 ->
     erlang:list_to_binary([$+, $0, $0, $0, erlang:integer_to_binary(Val)]);
 format_timezone(+0000) ->
-    <<"+0000">>;
+    <<"Z">>;
 format_timezone(Val) when Val > -10 ->
     erlang:list_to_binary([$-, $0, $0, $0, erlang:integer_to_binary(erlang:abs(Val))]);
 format_timezone(Val) when Val > -100 ->
@@ -137,3 +139,8 @@ format_timezone(Val) when Val > -1000 ->
     erlang:list_to_binary([$-, $0, erlang:integer_to_binary(erlang:abs(Val))]);
 format_timezone(Val) ->
     erlang:integer_to_binary(Val).
+
+resolve_timezone_alias("Z") ->
+    "+0000";
+resolve_timezone_alias(TZ) ->
+    TZ.

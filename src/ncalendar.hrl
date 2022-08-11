@@ -15,7 +15,7 @@
 -define(ncalendar, true).
 
 %%% TYPES
--type datetime() :: {date(), time(), timezone()}.
+-type datetime() :: {date(), time(), timezone() | timezone_alias()}.
 -type format() :: iso8601.
 -type date() :: calendar:date().
 -type time() :: calendat:time().
@@ -62,6 +62,8 @@
     | +1300
     | +1345
     | +1400.
+%% <<"Z">>
+-type timezone_alias() :: binary().
 -type value() :: binary().
 
 %%% MACROS
