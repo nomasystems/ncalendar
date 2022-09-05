@@ -19,9 +19,21 @@
 %%% EXTERNAL EXPORTS
 -export([
     convert/3,
+    from_datetime/2,
+    from_datetime/3,
     is_valid/2,
     now/1,
-    now/2
+    now/2,
+    to_datetime/2
+]).
+
+%%% TYPES
+-export_type([
+    datetime/0,
+    format/0,
+    timezone/0,
+    timezone_alias/0,
+    value/0
 ]).
 
 %%%-----------------------------------------------------------------------------
@@ -30,16 +42,32 @@
 -spec convert(From, To, Value) -> Result when
     From :: format(),
     To :: format(),
-    Value :: binary(),
-    Result :: binary().
+    Value :: value(),
+    Result :: value().
 convert(From, To, Value) ->
     ModFrom = mod(From),
     ModTo = mod(To),
-    ModTo:from_datetime(ModFrom:to_datetime(Value)).
+    ModTo:from_datetimezone(ModFrom:to_datetimezone(Value)).
+
+-spec from_datetime(Format, Datetime) -> Result when
+    Format :: format(),
+    Datetime :: datetime(),
+    Result :: value().
+from_datetime(Format, Datetime) ->
+    from_datetime(Format, Datetime, +0000).
+
+-spec from_datetime(Format, Datetime, Timezone) -> Result when
+    Format :: format(),
+    Datetime :: datetime(),
+    Timezone :: timezone(),
+    Result :: value().
+from_datetime(Format, Datetime, Timezone) ->
+    Mod = mod(Format),
+    Mod:from_datetimezone({Datetime, Timezone}).
 
 -spec is_valid(Format, Value) -> Result when
     Format :: format(),
-    Value :: binary(),
+    Value :: value(),
     Result :: boolean().
 is_valid(Format, Value) ->
     Mod = mod(Format),
@@ -58,7 +86,16 @@ now(Format) ->
 now(Format, Timezone) ->
     {Date, Time} = erlang:universaltime(),
     Mod = mod(Format),
-    Mod:from_datetime({Date, Time, Timezone}).
+    Mod:from_datetimezone({{Date, Time}, Timezone}).
+
+-spec to_datetime(Format, Value) -> Result when
+    Format :: format(),
+    Value :: value(),
+    Result :: datetime().
+to_datetime(Format, Value) ->
+    Mod = mod(Format),
+    Datetimezone = Mod:to_datetimezone(Value),
+    ncalendar_util:datetimezone_to_datetime(Datetimezone).
 
 %%%-----------------------------------------------------------------------------
 %%% INTERNAL FUNCTIONS

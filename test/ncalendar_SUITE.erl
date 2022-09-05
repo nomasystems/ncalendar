@@ -21,7 +21,8 @@
 %%%-----------------------------------------------------------------------------
 all() ->
     [
-        {group, properties}
+        {group, properties},
+        datetime
     ].
 
 groups() ->
@@ -68,3 +69,9 @@ there_and_back_again(Conf) ->
         ncalendar_properties:prop_there_and_back_again(),
         Conf
     ).
+
+datetime(_Conf) ->
+    Timestamp = erlang:timestamp(),
+    Datetime = calendar:now_to_datetime(Timestamp),
+    Bin = ncalendar:from_datetime(iso8601, Datetime),
+    Datetime = ncalendar:to_datetime(iso8601, Bin).

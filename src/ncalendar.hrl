@@ -15,10 +15,11 @@
 -define(ncalendar, true).
 
 %%% TYPES
--type datetime() :: {date(), time(), timezone() | timezone_alias()}.
--type format() :: iso8601.
 -type date() :: calendar:date().
--type time() :: calendat:time().
+-type datetime() :: calendar:datetime().
+-type datetimezone() :: {datetime(), timezone() | timezone_alias()}.
+-type format() :: iso8601.
+-type time() :: calendar:time().
 -type timezone() ::
     -1200
     | -1100

@@ -18,15 +18,37 @@
 
 %%% EXTERNAL EXPORTS
 -export([
+    datetime_to_datetimezone/2,
+    datetimezone_to_datetime/1,
     is_valid_date/1,
     is_valid_time/1,
-    is_valid_timezone/1,
-    timezone_diff/1
+    is_valid_timezone/1
 ]).
 
 %%%-----------------------------------------------------------------------------
 %%% EXTERNAL EXPORTS
 %%%-----------------------------------------------------------------------------
+-spec datetime_to_datetimezone(Datetime, Timezone) -> Result when
+    Datetime :: datetime(),
+    Timezone :: timezone(),
+    Result :: datetimezone().
+datetime_to_datetimezone(Datetime, +0000) ->
+    {Datetime, +0000};
+datetime_to_datetimezone(RawDatetime, Timezone) ->
+    GregorianSeconds =
+        calendar:datetime_to_gregorian_seconds(RawDatetime) - timezone_diff(Timezone),
+    Datetime = calendar:gregorian_seconds_to_datetime(GregorianSeconds),
+    {Datetime, Timezone}.
+
+-spec datetimezone_to_datetime(Datetimezone) -> Result when
+    Datetimezone :: datetimezone(),
+    Result :: datetime().
+datetimezone_to_datetime({Datetime, +0000}) ->
+    Datetime;
+datetimezone_to_datetime({Datetime, Timezone}) ->
+    LocalSeconds = calendar:datetime_to_gregorian_seconds(Datetime) + timezone_diff(Timezone),
+    calendar:gregorian_seconds_to_datetime(LocalSeconds).
+
 -spec is_valid_date(Date) -> Result when
     Date :: date(),
     Result :: boolean().
@@ -47,6 +69,9 @@ is_valid_time(_Time) ->
 is_valid_timezone(Timezone) ->
     lists:member(Timezone, ?TIMEZONES).
 
+%%%-----------------------------------------------------------------------------
+%%% INTERNAL FUNCTIONS
+%%%-----------------------------------------------------------------------------
 -spec timezone_diff(Timezone) -> Result when
     Timezone :: timezone(),
     Result :: integer().
@@ -55,9 +80,6 @@ timezone_diff(Timezone) ->
     Hour = Timezone div 100,
     timezone_diff(Hour, Min).
 
-%%%-----------------------------------------------------------------------------
-%%% INTERNAL FUNCTIONS
-%%%-----------------------------------------------------------------------------
 timezone_diff(Hour, Min) when Hour < 0 ->
     -1 * ((erlang:abs(Hour) * 3600) + (Min * 60));
 timezone_diff(Hour, Min) ->
