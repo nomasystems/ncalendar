@@ -20,11 +20,14 @@
 -export([
     convert/3,
     from_datetime/2,
-    from_datetime/3,
+    from_gregorian_seconds/2,
+    from_timestamp/2,
     is_valid/2,
     now/1,
     now/2,
-    to_datetime/2
+    to_datetime/2,
+    to_gregorian_seconds/2,
+    to_timestamp/2
 ]).
 
 %%% TYPES
@@ -35,6 +38,9 @@
     timezone_alias/0,
     value/0
 ]).
+
+%%% MACROS
+-define(JANUARY_1ST_1970, 62167219200).
 
 %%%-----------------------------------------------------------------------------
 %%% EXTERNAL EXPORTS
@@ -54,16 +60,24 @@ convert(From, To, Value) ->
     Datetime :: datetime(),
     Result :: value().
 from_datetime(Format, Datetime) ->
-    from_datetime(Format, Datetime, +0000).
-
--spec from_datetime(Format, Datetime, Timezone) -> Result when
-    Format :: format(),
-    Datetime :: datetime(),
-    Timezone :: timezone(),
-    Result :: value().
-from_datetime(Format, Datetime, Timezone) ->
     Mod = mod(Format),
-    Mod:from_datetimezone({Datetime, Timezone}).
+    Mod:from_datetimezone({Datetime, +0000}).
+
+-spec from_gregorian_seconds(Format, GregorianSeconds) -> Result when
+    Format :: format(),
+    GregorianSeconds :: gregorian_seconds(),
+    Result :: value().
+from_gregorian_seconds(Format, GregorianSeconds) ->
+    Datetime = calendar:gregorian_seconds_to_datetime(GregorianSeconds),
+    from_datetime(Format, Datetime).
+
+-spec from_timestamp(Format, Timestamp) -> Result when
+    Format :: format(),
+    Timestamp :: timestamp(),
+    Result :: value().
+from_timestamp(Format, {MSecs, Secs, _MicroSecs}) ->
+    GregorianSeconds = MSecs * 1000000 + Secs + ?JANUARY_1ST_1970,
+    from_gregorian_seconds(Format, GregorianSeconds).
 
 -spec is_valid(Format, Value) -> Result when
     Format :: format(),
@@ -96,6 +110,23 @@ to_datetime(Format, Value) ->
     Mod = mod(Format),
     Datetimezone = Mod:to_datetimezone(Value),
     ncalendar_util:datetimezone_to_datetime(Datetimezone).
+
+-spec to_gregorian_seconds(Format, Value) -> Result when
+    Format :: format(),
+    Value :: value(),
+    Result :: gregorian_seconds().
+to_gregorian_seconds(Format, Value) ->
+    Datetime = to_datetime(Format, Value),
+    calendar:datetime_to_gregorian_seconds(Datetime).
+
+-spec to_timestamp(Format, Value) -> Result when
+    Format :: format(),
+    Value :: value(),
+    Result :: timestamp().
+to_timestamp(Format, Value) ->
+    GregorianSeconds = to_gregorian_seconds(Format, Value),
+    Secs = GregorianSeconds - ?JANUARY_1ST_1970,
+    {Secs div 1000000, Secs rem 1000000, 0}.
 
 %%%-----------------------------------------------------------------------------
 %%% INTERNAL FUNCTIONS

@@ -22,7 +22,9 @@
 all() ->
     [
         {group, properties},
-        datetime
+        datetime,
+        gregorian_seconds,
+        timestamp
     ].
 
 groups() ->
@@ -71,7 +73,18 @@ there_and_back_again(Conf) ->
     ).
 
 datetime(_Conf) ->
-    Timestamp = erlang:timestamp(),
-    Datetime = calendar:now_to_datetime(Timestamp),
+    Datetime = calendar:universal_time(),
     Bin = ncalendar:from_datetime(iso8601, Datetime),
     Datetime = ncalendar:to_datetime(iso8601, Bin).
+
+gregorian_seconds(_Conf) ->
+    Datetime = calendar:universal_time(),
+    GregorianSeconds = calendar:datetime_to_gregorian_seconds(Datetime),
+    Bin = ncalendar:from_gregorian_seconds(iso8601, GregorianSeconds),
+    GregorianSeconds = ncalendar:to_gregorian_seconds(iso8601, Bin).
+
+timestamp(_Conf) ->
+    Timestamp = erlang:timestamp(),
+    Bin = ncalendar:from_timestamp(iso8601, Timestamp),
+    {MSecs, Secs, _MicroSecs1} = Timestamp,
+    {MSecs, Secs, 0} = ncalendar:to_timestamp(iso8601, Bin).
