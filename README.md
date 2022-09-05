@@ -29,6 +29,8 @@ Add `ncalendar` to your project dependencies.
 | `ncalendar:now/1` | Generates a binary representation of the current datetime with no UTC offset in the given format |
 | `ncalendar:now/2` | Generates a binary representation of the current datetime in the given format and timezone |
 | `ncalendar:to_datetime/2` | Converts a binary representation of a datetime in the given format to a `calendar:datetime()` value |
+| `ncalendar:to_gregorian_seconds/2` | Converts a binary representation of a datetime in the given format to the integer value of gregorian seconds |
+| `ncalendar:to_timestamp/2` | Converts a binary representation of a datetime in the given format to a `erlang:timestamp()` value |
 
 ## Supported formats
 
