@@ -34,6 +34,8 @@
 -export_type([
     datetime/0,
     format/0,
+    gregorian_seconds/0,
+    timestamp/0,
     timezone/0,
     timezone_alias/0,
     value/0
