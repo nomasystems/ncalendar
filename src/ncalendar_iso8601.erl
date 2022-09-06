@@ -18,33 +18,18 @@
 
 %%% EXTERNAL EXPORTS
 -export([
-    from_datetime/1,
+    from_datetimezone/1,
     is_valid/1,
-    to_datetime/1
+    to_datetimezone/1
 ]).
 
 %%%-----------------------------------------------------------------------------
 %%% EXTERNAL EXPORTS
 %%%-----------------------------------------------------------------------------
-from_datetime({Date, Time, <<"Z">>}) ->
-    from_datetime({Date, Time, +0000});
-from_datetime({{Year, Month, Day}, {Hour, Min, Sec}, +0000}) ->
-    erlang:list_to_binary([
-        pad(4, Year),
-        pad(2, Month),
-        pad(2, Day),
-        "T",
-        pad(2, Hour),
-        pad(2, Min),
-        pad(2, Sec),
-        timezone(0)
-    ]);
-from_datetime({{RawYear, RawMonth, RawDay}, {RawHour, RawMin, RawSec}, Timezone}) ->
-    LocalSeconds =
-        calendar:datetime_to_gregorian_seconds({
-            {RawYear, RawMonth, RawDay}, {RawHour, RawMin, RawSec}
-        }) + ncalendar_util:timezone_diff(Timezone),
-    {{Year, Month, Day}, {Hour, Min, Sec}} = calendar:gregorian_seconds_to_datetime(LocalSeconds),
+from_datetimezone({Datetime, <<"Z">>}) ->
+    from_datetimezone({Datetime, +0000});
+from_datetimezone({_Datetime, Timezone} = Datetimezone) ->
+    {{Year, Month, Day}, {Hour, Min, Sec}} = ncalendar_util:datetimezone_to_datetime(Datetimezone),
     erlang:list_to_binary([
         pad(4, Year),
         pad(2, Month),
@@ -75,7 +60,7 @@ is_valid(Value) ->
             false
     end.
 
-to_datetime(Value) ->
+to_datetimezone(Value) ->
     try
         [Y1, Y2, Y3, Y4, Mo1, Mo2, D1, D2, $T, H1, H2, Mi1, Mi2, S1, S2 | TZ] = erlang:binary_to_list(
             Value
@@ -89,11 +74,7 @@ to_datetime(Value) ->
         Min = erlang:list_to_integer([Mi1, Mi2]),
         Sec = erlang:list_to_integer([S1, S2]),
         RawTime = {Hour, Min, Sec},
-        GregorianSeconds =
-            calendar:datetime_to_gregorian_seconds({RawDate, RawTime}) -
-                ncalendar_util:timezone_diff(Timezone),
-        {Date, Time} = calendar:gregorian_seconds_to_datetime(GregorianSeconds),
-        {Date, Time, Timezone}
+        ncalendar_util:datetime_to_datetimezone({RawDate, RawTime}, Timezone)
     catch
         _Class:_Term ->
             erlang:throw({error, ncalendar_iso8601, {unrecognized_value, Value}})
