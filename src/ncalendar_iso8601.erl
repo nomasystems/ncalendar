@@ -87,8 +87,10 @@ pad(2, N) when N > 9 ->
     erlang:integer_to_list(N);
 pad(2, N) ->
     [$0 | erlang:integer_to_list(N)];
-pad(4, N) when N > 99 ->
+pad(4, N) when N > 999 ->
     erlang:integer_to_list(N);
+pad(4, N) when N > 99 ->
+    [$0 | erlang:integer_to_list(N)];
 pad(4, N) when N > 9 ->
     [$0, $0 | erlang:integer_to_list(N)];
 pad(4, N) ->
