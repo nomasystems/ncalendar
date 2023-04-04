@@ -142,5 +142,9 @@ mod(iso8601) ->
     ncalendar_iso8601;
 mod(iso8601_ms) ->
     ncalendar_iso8601_ms;
+mod(iso8601_ext) ->
+    ncalendar_iso8601_ext;
+mod(iso8601_ext_ms) ->
+    ncalendar_iso8601_ext_ms;
 mod(Format) ->
     erlang:throw({error, ncalendar, {unsupported_format, Format}}).
