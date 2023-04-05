@@ -34,7 +34,7 @@
 %%%-----------------------------------------------------------------------------
 -spec datetime_to_datetimezone(Datetime, Subseconds, Timezone) -> Result when
     Datetime :: datetime(),
-    Subseconds :: subseconds(),
+    Subseconds :: sub_seconds(),
     Timezone :: timezone(),
     Result :: datetimezone().
 datetime_to_datetimezone(Datetime, Subseconds, +0000) ->

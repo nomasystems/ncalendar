@@ -11,7 +11,7 @@
 %% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %% See the License for the specific language governing permissions and
 %% limitations under the License
--module(ncalendar_iso8601_milliseconds).
+-module(ncalendar_iso8601_ms).
 
 %%% BEHAVIOURS
 -behaviour(ncalendar_format).

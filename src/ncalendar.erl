@@ -63,7 +63,8 @@ convert(From, To, Value) ->
     Result :: value().
 from_datetime(Format, Datetime) ->
     Datetimezone = {Datetime, {0, 0}, +0000},
-    from_datetimezone(Format, Datetimezone).
+    Mod = mod(Format),
+    Mod:from_datetimezone(Datetimezone).
 
 -spec from_gregorian_seconds(Format, GregorianSeconds) -> Result when
     Format :: format(),
@@ -72,7 +73,8 @@ from_datetime(Format, Datetime) ->
 from_gregorian_seconds(Format, GregorianSeconds) ->
     Datetime = calendar:gregorian_seconds_to_datetime(GregorianSeconds),
     Datetimezone = {Datetime, {0, 0}, +0000},
-    from_datetimezone(Format, Datetimezone).
+    Mod = mod(Format),
+    Mod:from_datetimezone(Datetimezone).
 
 -spec from_timestamp(Format, Timestamp) -> Result when
     Format :: format(),
@@ -80,7 +82,8 @@ from_gregorian_seconds(Format, GregorianSeconds) ->
     Result :: value().
 from_timestamp(Format, Timestamp) ->
     Datetimezone = ncalendar_util:timestamp_to_datetimezone(Timestamp, +0000),
-    from_datetimezone(Format, Datetimezone).
+    Mod = mod(Format),
+    Mod:from_datetimezone(Datetimezone).
 
 -spec is_valid(Format, Value) -> Result when
     Format :: format(),
@@ -102,7 +105,8 @@ now(Format) ->
     Result :: value().
 now(Format, Timezone) ->
     Datetimezone = ncalendar_util:timestamp_to_datetimezone(erlang:timestamp(), Timezone),
-    from_datetimezone(Format, Datetimezone).
+    Mod = mod(Format),
+    Mod:from_datetimezone(Datetimezone).
 
 -spec to_datetime(Format, Value) -> Result when
     Format :: format(),
@@ -134,13 +138,9 @@ to_timestamp(Format, Value) ->
 %%%-----------------------------------------------------------------------------
 %%% INTERNAL FUNCTIONS
 %%%-----------------------------------------------------------------------------
-from_datetimezone(Format, Datetimezone) ->
-    Mod = mod(Format),
-    Mod:from_datetimezone(Datetimezone).
-
 mod(iso8601) ->
     ncalendar_iso8601;
-mod(iso8601_milliseconds) ->
-    ncalendar_iso8601_milliseconds;
+mod(iso8601_ms) ->
+    ncalendar_iso8601_ms;
 mod(Format) ->
     erlang:throw({error, ncalendar, {unsupported_format, Format}}).

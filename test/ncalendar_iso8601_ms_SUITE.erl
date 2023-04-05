@@ -11,7 +11,7 @@
 %% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %% See the License for the specific language governing permissions and
 %% limitations under the License.
--module(ncalendar_iso8601_milliseconds_SUITE).
+-module(ncalendar_iso8601_ms_SUITE).
 
 %%% EXTERNAL EXPORTS
 -compile([export_all, nowarn_export_all]).
@@ -25,9 +25,6 @@ all() ->
         is_valid,
         to_datetimezone
     ].
-
-suite() ->
-    [{timetrap, {minutes, 60}}].
 
 %%%-----------------------------------------------------------------------------
 %%% INIT SUITE EXPORTS
@@ -48,13 +45,13 @@ from_datetime_zone() ->
     [{userdata, [{doc, "Tests transform datetime to iso8601"}]}].
 
 from_datetime_zone(_Conf) ->
-    <<"20140519T100000.030Z">> = ncalendar_iso8601_milliseconds:from_datetimezone({
+    <<"20140519T100000.030Z">> = ncalendar_iso8601_ms:from_datetimezone({
         {{2014, 5, 19}, {10, 0, 0}}, {30, 0}, <<"Z">>
     }),
-    <<"20140519T120000.030Z">> = ncalendar_iso8601_milliseconds:from_datetimezone({
+    <<"20140519T120000.030Z">> = ncalendar_iso8601_ms:from_datetimezone({
         {{2014, 5, 19}, {12, 0, 0}}, {30, 0}, +0000
     }),
-    <<"20140601T080000.030+1100">> = ncalendar_iso8601_milliseconds:from_datetimezone({
+    <<"20140601T080000.030+1100">> = ncalendar_iso8601_ms:from_datetimezone({
         {{2014, 5, 31}, {21, 0, 0}}, {30, 0}, +1100
     }).
 
@@ -62,33 +59,29 @@ is_valid() ->
     [{userdata, [{doc, "Tests is a binary valid iso8601"}]}].
 
 is_valid(_Conf) ->
-    false = ncalendar_iso8601_milliseconds:is_valid(<<"20140519T100000Z">>),
-    false = ncalendar_iso8601_milliseconds:is_valid(<<"20140519T100000+0300">>),
-    false = ncalendar_iso8601_milliseconds:is_valid(<<"20140519T100000-0230">>),
-    true = ncalendar_iso8601_milliseconds:is_valid(<<"20140519T100000.030Z">>),
-    true = ncalendar_iso8601_milliseconds:is_valid(<<"20140519T100000.030+0300">>),
-    true = ncalendar_iso8601_milliseconds:is_valid(<<"20140519T100000.000-0230">>),
-    false = ncalendar_iso8601_milliseconds:is_valid(<<"20151131T100000Z">>),
-    false = ncalendar_iso8601_milliseconds:is_valid(<<"20140519T240000+0300">>),
-    false = ncalendar_iso8601_milliseconds:is_valid(<<"20140519T100000-3430">>),
-    false = ncalendar_iso8601_milliseconds:is_valid(<<"20151131T100000.000Z">>),
-    false = ncalendar_iso8601_milliseconds:is_valid(<<"20140519T240000.000+0300">>),
-    false = ncalendar_iso8601_milliseconds:is_valid(<<"20140519T100000.000-3430">>).
+    false = ncalendar_iso8601_ms:is_valid(<<"20140519T100000Z">>),
+    false = ncalendar_iso8601_ms:is_valid(<<"20140519T100000+0300">>),
+    false = ncalendar_iso8601_ms:is_valid(<<"20140519T100000-0230">>),
+    true = ncalendar_iso8601_ms:is_valid(<<"20140519T100000.030Z">>),
+    true = ncalendar_iso8601_ms:is_valid(<<"20140519T100000.030+0300">>),
+    true = ncalendar_iso8601_ms:is_valid(<<"20140519T100000.000-0230">>),
+    false = ncalendar_iso8601_ms:is_valid(<<"20151131T100000Z">>),
+    false = ncalendar_iso8601_ms:is_valid(<<"20140519T240000+0300">>),
+    false = ncalendar_iso8601_ms:is_valid(<<"20140519T100000-3430">>),
+    false = ncalendar_iso8601_ms:is_valid(<<"20151131T100000.000Z">>),
+    false = ncalendar_iso8601_ms:is_valid(<<"20140519T240000.000+0300">>),
+    false = ncalendar_iso8601_ms:is_valid(<<"20140519T100000.000-3430">>).
 
 to_datetimezone() ->
     [{userdata, [{doc, "Tests is a binary valid iso8601"}]}].
 
 to_datetimezone(_Conf) ->
-    {{{2014, 5, 19}, {10, 0, 0}}, {30, 0}, +0000} = ncalendar_iso8601_milliseconds:to_datetimezone(
+    {{{2014, 5, 19}, {10, 0, 0}}, {30, 0}, +0000} = ncalendar_iso8601_ms:to_datetimezone(
         <<"20140519T100000.030Z">>
     ),
-    {{{2014, 5, 19}, {7, 0, 0}}, {30, 0}, +0300} = ncalendar_iso8601_milliseconds:to_datetimezone(
+    {{{2014, 5, 19}, {7, 0, 0}}, {30, 0}, +0300} = ncalendar_iso8601_ms:to_datetimezone(
         <<"20140519T100000.030+0300">>
     ),
-    {{{2014, 5, 19}, {12, 30, 0}}, {30, 0}, -0230} = ncalendar_iso8601_milliseconds:to_datetimezone(
+    {{{2014, 5, 19}, {12, 30, 0}}, {30, 0}, -0230} = ncalendar_iso8601_ms:to_datetimezone(
         <<"20140519T100000.030-0230">>
     ).
-
-%%%-----------------------------------------------------------------------------
-%%% INTERNAL FUNCTIONS
-%%%-----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 # ncalendar
 
-![ncalendar](https://github.com/nomasystems/ncalendar/actions/workflows/build.yml/badge.svg)
+![ncalendar](https://github.com/nomasystems/ncalendar/actions/workflows/ci.yml/badge.svg)
 
 `ncalendar` is an OTP library for the manipulation of a binary representation of dates and times.
 
@@ -36,7 +36,7 @@ Add `ncalendar` to your project dependencies.
 
 Currently, `ncalendar` supports the following formats:
 - `iso8601`
-- `iso8601_milliseconds`
+- `iso8601_ms` miliseconds precision.
 
 ## Support
 

@@ -76,8 +76,8 @@ convert(_Conf) ->
     ISO8601 = <<"20140519T100000Z">>,
     ISO8601Milliseconds = <<"20140519T100000.000Z">>,
 
-    ISO8601Milliseconds = ncalendar:convert(iso8601, iso8601_milliseconds, ISO8601),
-    ISO8601 = ncalendar:convert(iso8601_milliseconds, iso8601, ISO8601Milliseconds).
+    ISO8601Milliseconds = ncalendar:convert(iso8601, iso8601_ms, ISO8601),
+    ISO8601 = ncalendar:convert(iso8601_ms, iso8601, ISO8601Milliseconds).
 
 datetime(_Conf) ->
     Datetime = calendar:universal_time(),
