@@ -47,7 +47,32 @@ from_datetimezone({_Datetime, Timezone} = Datetimezone) ->
 
 is_valid(Value) when is_binary(Value) ->
     is_valid(erlang:binary_to_list(Value));
-is_valid([Y1, Y2, Y3, Y4, $-, Mo1, Mo2, $-, D1, D2, $T, H1, H2, $:, Mi1, Mi2, $:, S1, S2, $., _Ml1, _Ml2, _Ml3 | TZ]) ->
+is_valid([
+    Y1,
+    Y2,
+    Y3,
+    Y4,
+    $-,
+    Mo1,
+    Mo2,
+    $-,
+    D1,
+    D2,
+    $T,
+    H1,
+    H2,
+    $:,
+    Mi1,
+    Mi2,
+    $:,
+    S1,
+    S2,
+    $.,
+    _Ml1,
+    _Ml2,
+    _Ml3
+    | TZ
+]) ->
     is_valid([Y1, Y2, Y3, Y4, $-, Mo1, Mo2, $-, D1, D2, $T, H1, H2, $:, Mi1, Mi2, $:, S1, S2 | TZ]);
 is_valid([Y1, Y2, Y3, Y4, $-, Mo1, Mo2, $-, D1, D2, $T, H1, H2, $:, Mi1, Mi2, $:, S1, S2 | TZ]) ->
     try
@@ -66,7 +91,6 @@ is_valid([Y1, Y2, Y3, Y4, $-, Mo1, Mo2, $-, D1, D2, $T, H1, H2, $:, Mi1, Mi2, $:
     end;
 is_valid(_) ->
     false.
-
 
 to_datetimezone(Value) when is_binary(Value) ->
     to_datetimezone(erlang:binary_to_list(Value));

@@ -77,11 +77,17 @@ is_valid(_Conf) ->
 
 to_datetimezone() ->
     [{userdata, [{doc, "Tests is a binary valid iso8601"}]}].
-    
+
 to_datetimezone(_Conf) ->
-    {{{2014, 5, 19}, {10, 0, 0}}, +0000} = ncalendar_iso8601_extended:to_datetimezone(<<"2014-05-19T10:00:00.000Z">>),
-    {{{2014, 5, 19}, {7, 0, 0}}, +0300} = ncalendar_iso8601_extended:to_datetimezone(<<"2014-05-19T10:00:00.000+0300">>),
-    {{{2014, 5, 19}, {12, 30, 0}}, -0230} = ncalendar_iso8601_extended:to_datetimezone(<<"2014-05-19T10:00:00.000-0230">>).
+    {{{2014, 5, 19}, {10, 0, 0}}, +0000} = ncalendar_iso8601_extended:to_datetimezone(
+        <<"2014-05-19T10:00:00.000Z">>
+    ),
+    {{{2014, 5, 19}, {7, 0, 0}}, +0300} = ncalendar_iso8601_extended:to_datetimezone(
+        <<"2014-05-19T10:00:00.000+0300">>
+    ),
+    {{{2014, 5, 19}, {12, 30, 0}}, -0230} = ncalendar_iso8601_extended:to_datetimezone(
+        <<"2014-05-19T10:00:00.000-0230">>
+    ).
 
 %%%-----------------------------------------------------------------------------
 %%% INTERNAL FUNCTIONS
