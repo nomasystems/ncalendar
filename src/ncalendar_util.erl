@@ -18,36 +18,56 @@
 
 %%% EXTERNAL EXPORTS
 -export([
-    datetime_to_datetimezone/2,
+    datetime_to_datetimezone/3,
     datetimezone_to_datetime/1,
+    datetimezone_to_gregorian_seconds/1,
+    datetimezone_to_timestamp/1,
     is_valid_date/1,
     is_valid_time/1,
-    is_valid_timezone/1
+    is_valid_timezone/1,
+    timestamp_to_datetimezone/2
 ]).
 
+-define(JANUARY_1ST_1970, 62167219200).
 %%%-----------------------------------------------------------------------------
 %%% EXTERNAL EXPORTS
 %%%-----------------------------------------------------------------------------
--spec datetime_to_datetimezone(Datetime, Timezone) -> Result when
+-spec datetime_to_datetimezone(Datetime, Subseconds, Timezone) -> Result when
     Datetime :: datetime(),
+    Subseconds :: subseconds(),
     Timezone :: timezone(),
     Result :: datetimezone().
-datetime_to_datetimezone(Datetime, +0000) ->
-    {Datetime, +0000};
-datetime_to_datetimezone(RawDatetime, Timezone) ->
+datetime_to_datetimezone(Datetime, Subseconds, +0000) ->
+    {Datetime, Subseconds, +0000};
+datetime_to_datetimezone(RawDatetime, Subseconds, Timezone) ->
     GregorianSeconds =
         calendar:datetime_to_gregorian_seconds(RawDatetime) - timezone_diff(Timezone),
     Datetime = calendar:gregorian_seconds_to_datetime(GregorianSeconds),
-    {Datetime, Timezone}.
+    {Datetime, Subseconds, Timezone}.
 
 -spec datetimezone_to_datetime(Datetimezone) -> Result when
     Datetimezone :: datetimezone(),
     Result :: datetime().
-datetimezone_to_datetime({Datetime, +0000}) ->
+datetimezone_to_datetime({Datetime, _Subseconds, +0000}) ->
     Datetime;
-datetimezone_to_datetime({Datetime, Timezone}) ->
+datetimezone_to_datetime({Datetime, _Subseconds, Timezone}) ->
     LocalSeconds = calendar:datetime_to_gregorian_seconds(Datetime) + timezone_diff(Timezone),
     calendar:gregorian_seconds_to_datetime(LocalSeconds).
+
+-spec datetimezone_to_gregorian_seconds(Datetimezone) -> Result when
+    Datetimezone :: datetimezone(),
+    Result :: gregorian_seconds().
+datetimezone_to_gregorian_seconds({Datetime, _Subseconds, Timezone}) ->
+    calendar:datetime_to_gregorian_seconds(Datetime) + timezone_diff(Timezone).
+
+-spec datetimezone_to_timestamp(Datetimezone) -> Result when
+    Datetimezone :: datetimezone(),
+    Result :: timestamp().
+datetimezone_to_timestamp({Datetime, {Milliseconds, MicroSeconds}, Timezone}) ->
+    GregorianSeconds = calendar:datetime_to_gregorian_seconds(Datetime) + timezone_diff(Timezone),
+    Secs = GregorianSeconds - ?JANUARY_1ST_1970,
+    MicroSecs = Milliseconds * 1000 + MicroSeconds,
+    {Secs div 1000000, Secs rem 1000000, MicroSecs}.
 
 -spec is_valid_date(Date) -> Result when
     Date :: date(),
@@ -68,6 +88,18 @@ is_valid_time(_Time) ->
     Result :: boolean().
 is_valid_timezone(Timezone) ->
     lists:member(Timezone, ?TIMEZONES).
+
+-spec timestamp_to_datetimezone(Timestamp, Timezone) -> Result when
+    Timestamp :: timestamp(),
+    Timezone :: timezone(),
+    Result :: datetimezone().
+timestamp_to_datetimezone({MSecs, Secs, MicroSecs}, TimeZone) ->
+    Milliseconds = MicroSecs div 1000,
+    MicroSeconds = MicroSecs - Milliseconds * 1000,
+    Subseconds = {Milliseconds, MicroSeconds},
+    GregorianSeconds = MSecs * 1000000 + Secs + ?JANUARY_1ST_1970,
+    Datetime = calendar:gregorian_seconds_to_datetime(GregorianSeconds),
+    {Datetime, Subseconds, TimeZone}.
 
 %%%-----------------------------------------------------------------------------
 %%% INTERNAL FUNCTIONS

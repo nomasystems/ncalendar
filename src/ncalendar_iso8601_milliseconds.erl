@@ -11,7 +11,7 @@
 %% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %% See the License for the specific language governing permissions and
 %% limitations under the License
--module(ncalendar_iso8601).
+-module(ncalendar_iso8601_milliseconds).
 
 %%% BEHAVIOURS
 -behaviour(ncalendar_format).
@@ -26,9 +26,10 @@
 %%%-----------------------------------------------------------------------------
 %%% EXTERNAL EXPORTS
 %%%-----------------------------------------------------------------------------
+
 from_datetimezone({Datetime, Subseconds, <<"Z">>}) ->
     from_datetimezone({Datetime, Subseconds, +0000});
-from_datetimezone({_Datetime, _Subseconds, Timezone} = Datetimezone) ->
+from_datetimezone({_Datetime, {Milliseconds, _Microseconds}, Timezone} = Datetimezone) ->
     {{Year, Month, Day}, {Hour, Min, Sec}} = ncalendar_util:datetimezone_to_datetime(Datetimezone),
     erlang:list_to_binary([
         pad(4, Year),
@@ -38,14 +39,14 @@ from_datetimezone({_Datetime, _Subseconds, Timezone} = Datetimezone) ->
         pad(2, Hour),
         pad(2, Min),
         pad(2, Sec),
+        ".",
+        pad(3, Milliseconds),
         timezone(Timezone)
     ]).
 
 is_valid(Value) when is_binary(Value) ->
     is_valid(erlang:binary_to_list(Value));
 is_valid([Y1, Y2, Y3, Y4, Mo1, Mo2, D1, D2, $T, H1, H2, Mi1, Mi2, S1, S2, $., _Ml1, _Ml2, _Ml3 | TZ]) ->
-    is_valid([Y1, Y2, Y3, Y4, Mo1, Mo2, D1, D2, $T, H1, H2, Mi1, Mi2, S1, S2 | TZ]);
-is_valid([Y1, Y2, Y3, Y4, Mo1, Mo2, D1, D2, $T, H1, H2, Mi1, Mi2, S1, S2 | TZ]) ->
     try
         true = ncalendar_util:is_valid_timezone(erlang:list_to_integer(resolve_timezone_alias(TZ))),
         Year = erlang:list_to_integer([Y1, Y2, Y3, Y4]),
@@ -66,10 +67,8 @@ is_valid(_) ->
 to_datetimezone(Value) when is_binary(Value) ->
     to_datetimezone(erlang:binary_to_list(Value));
 to_datetimezone([
-    Y1, Y2, Y3, Y4, Mo1, Mo2, D1, D2, $T, H1, H2, Mi1, Mi2, S1, S2, $., _Ml1, _Ml2, _Ml3 | TZ
+    Y1, Y2, Y3, Y4, Mo1, Mo2, D1, D2, $T, H1, H2, Mi1, Mi2, S1, S2, $., Ml1, Ml2, Ml3 | TZ
 ]) ->
-    to_datetimezone([Y1, Y2, Y3, Y4, Mo1, Mo2, D1, D2, $T, H1, H2, Mi1, Mi2, S1, S2 | TZ]);
-to_datetimezone([Y1, Y2, Y3, Y4, Mo1, Mo2, D1, D2, $T, H1, H2, Mi1, Mi2, S1, S2 | TZ]) ->
     Timezone = erlang:list_to_integer(resolve_timezone_alias(TZ)),
     Year = erlang:list_to_integer([Y1, Y2, Y3, Y4]),
     Month = erlang:list_to_integer([Mo1, Mo2]),
@@ -79,9 +78,11 @@ to_datetimezone([Y1, Y2, Y3, Y4, Mo1, Mo2, D1, D2, $T, H1, H2, Mi1, Mi2, S1, S2 
     Min = erlang:list_to_integer([Mi1, Mi2]),
     Sec = erlang:list_to_integer([S1, S2]),
     RawTime = {Hour, Min, Sec},
-    ncalendar_util:datetime_to_datetimezone({RawDate, RawTime}, {0, 0}, Timezone);
+    Millisec = erlang:list_to_integer([Ml1, Ml2, Ml3]),
+    ncalendar_util:datetime_to_datetimezone({RawDate, RawTime}, {Millisec, 0}, Timezone);
 to_datetimezone(Value) ->
-    erlang:throw({error, ncalendar_iso8601, {unrecognized_value, Value}}).
+    erlang:throw({error, ncalendar_iso8601_milliseconds, {unrecognized_value, Value}}).
+
 %%%-----------------------------------------------------------------------------
 %%% INTERNAL FUNCTIONS
 %%%-----------------------------------------------------------------------------
@@ -89,6 +90,12 @@ pad(2, N) when N > 9 ->
     erlang:integer_to_list(N);
 pad(2, N) ->
     [$0 | erlang:integer_to_list(N)];
+pad(3, N) when N > 99 ->
+    erlang:integer_to_list(N);
+pad(3, N) when N > 9 ->
+    [$0 | erlang:integer_to_list(N)];
+pad(3, N) ->
+    [$0, $0 | erlang:integer_to_list(N)];
 pad(4, N) when N > 999 ->
     erlang:integer_to_list(N);
 pad(4, N) when N > 99 ->

@@ -17,9 +17,11 @@
 %%% TYPES
 -type date() :: calendar:date().
 -type datetime() :: calendar:datetime().
--type datetimezone() :: {datetime(), timezone() | timezone_alias()}.
--type format() :: iso8601.
+-type datetimezone() :: {datetime(), subseconds(), timezone() | timezone_alias()}.
+-type format() :: iso8601 | iso8601_milliseconds.
 -type gregorian_seconds() :: non_neg_integer().
+-type microseconds() :: non_neg_integer().
+-type milliseconds() :: non_neg_integer().
 -type time() :: calendar:time().
 -type timestamp() :: erlang:timestamp().
 -type timezone() ::
@@ -67,6 +69,7 @@
     | +1400.
 %% <<"Z">>
 -type timezone_alias() :: binary().
+-type subseconds() :: {milliseconds(), microseconds()}.
 -type value() :: binary().
 
 %%% MACROS
