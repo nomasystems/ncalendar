@@ -26,8 +26,8 @@
 %%%-----------------------------------------------------------------------------
 %%% EXTERNAL EXPORTS
 %%%-----------------------------------------------------------------------------
-from_datetimezone({Datetime, <<"Z">>}) ->
-    from_datetimezone({Datetime, +0000});
+from_datetimezone({Datetime, Subseconds, <<"Z">>}) ->
+    from_datetimezone({Datetime, Subseconds, +0000});
 from_datetimezone({_Datetime, {millisecond, Milliseconds}, Timezone} = Datetimezone) ->
     {{Year, Month, Day}, {Hour, Min, Sec}} = ncalendar_util:datetimezone_to_datetime(Datetimezone),
     erlang:list_to_binary([
@@ -132,7 +132,7 @@ to_datetimezone([
     Millisec = erlang:list_to_integer([Ml1, Ml2, Ml3]),
     ncalendar_util:datetime_to_datetimezone({RawDate, RawTime}, {millisecond, Millisec}, Timezone);
 to_datetimezone(Value) ->
-    erlang:throw({error, ncalendar_iso8601_extended_miliseconds, {unrecognized_value, Value}}).
+    erlang:throw({error, ncalendar_iso8601_extended_milliseconds, {unrecognized_value, Value}}).
 
 %%%-----------------------------------------------------------------------------
 %%% INTERNAL FUNCTIONS

@@ -26,9 +26,9 @@
 %%%-----------------------------------------------------------------------------
 %%% EXTERNAL EXPORTS
 %%%-----------------------------------------------------------------------------
-from_datetimezone({Datetime, <<"Z">>}) ->
-    from_datetimezone({Datetime, +0000});
-from_datetimezone({_Datetime, Timezone} = Datetimezone) ->
+from_datetimezone({Datetime, Subseconds, <<"Z">>}) ->
+    from_datetimezone({Datetime, Subseconds, +0000});
+from_datetimezone({_Datetime, _Subseconds, Timezone} = Datetimezone) ->
     {{Year, Month, Day}, {Hour, Min, Sec}} = ncalendar_util:datetimezone_to_datetime(Datetimezone),
     erlang:list_to_binary([
         ncalendar_util:pad(4, Year),
@@ -135,7 +135,7 @@ to_datetimezone([
     Min = erlang:list_to_integer([Mi1, Mi2]),
     Sec = erlang:list_to_integer([S1, S2]),
     RawTime = {Hour, Min, Sec},
-    ncalendar_util:datetime_to_datetimezone({RawDate, RawTime}, Timezone);
+    ncalendar_util:datetime_to_datetimezone({RawDate, RawTime}, {millisecond, 0}, Timezone);
 to_datetimezone(Value) ->
     erlang:throw({error, ncalendar_iso8601_extended, {unrecognized_value, Value}}).
 
