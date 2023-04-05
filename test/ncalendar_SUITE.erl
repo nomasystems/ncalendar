@@ -76,9 +76,24 @@ there_and_back_again(Conf) ->
 convert(_Conf) ->
     ISO8601 = <<"20140519T100000Z">>,
     ISO8601Milliseconds = <<"20140519T100000.000Z">>,
+    ISO8601Extended = <<"2014-05-19T10:00:00Z">>,
+    ISO8601ExtendedMilliseconds = <<"2014-05-19T10:00:00.000Z">>,
 
     ISO8601Milliseconds = ncalendar:convert(iso8601, iso8601_ms, ISO8601),
-    ISO8601 = ncalendar:convert(iso8601_ms, iso8601, ISO8601Milliseconds).
+    ISO8601Extended = ncalendar:convert(iso8601, iso8601_ext, ISO8601),
+    ISO8601ExtendedMilliseconds = ncalendar:convert(iso8601, iso8601_ext_ms, ISO8601),
+
+    ISO8601 = ncalendar:convert(iso8601_ms, iso8601, ISO8601Milliseconds),
+    ISO8601Extended = ncalendar:convert(iso8601_ms, iso8601_ext, ISO8601Milliseconds),
+    ISO8601ExtendedMilliseconds = ncalendar:convert(iso8601_ms, iso8601_ext_ms, ISO8601Milliseconds),
+
+    ISO8601 = ncalendar:convert(iso8601_ext, iso8601, ISO8601Extended),
+    ISO8601Milliseconds = ncalendar:convert(iso8601_ext, iso8601_ms, ISO8601Extended),
+    ISO8601ExtendedMilliseconds = ncalendar:convert(iso8601_ext, iso8601_ext_ms, ISO8601Extended),
+
+    ISO8601 = ncalendar:convert(iso8601_ext_ms, iso8601, ISO8601ExtendedMilliseconds),
+    ISO8601Milliseconds = ncalendar:convert(iso8601_ext_ms, iso8601_ms, ISO8601ExtendedMilliseconds),
+    ISO8601Extended = ncalendar:convert(iso8601_ext_ms, iso8601_ext, ISO8601ExtendedMilliseconds).
 
 datetime(_Conf) ->
     Datetime = calendar:universal_time(),
