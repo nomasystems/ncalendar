@@ -41,9 +41,6 @@
     value/0
 ]).
 
-%%% MACROS
--define(JANUARY_1ST_1970, 62167219200).
-
 %%%-----------------------------------------------------------------------------
 %%% EXTERNAL EXPORTS
 %%%-----------------------------------------------------------------------------
@@ -81,7 +78,8 @@ from_gregorian_seconds(Format, GregorianSeconds) ->
     Timestamp :: timestamp(),
     Result :: value().
 from_timestamp(Format, Timestamp) ->
-    Datetimezone = ncalendar_util:timestamp_to_datetimezone(Timestamp, +0000),
+    Milliseconds = ncalendar_util:timestamp_to_milliseconds(Timestamp),
+    Datetimezone = ncalendar_util:milliseconds_to_datetimezone(Milliseconds, +0000),
     Mod = mod(Format),
     Mod:from_datetimezone(Datetimezone).
 
@@ -104,7 +102,9 @@ now(Format) ->
     Timezone :: timezone(),
     Result :: value().
 now(Format, Timezone) ->
-    Datetimezone = ncalendar_util:timestamp_to_datetimezone(erlang:timestamp(), Timezone),
+    Datetimezone = ncalendar_util:milliseconds_to_datetimezone(
+        erlang:system_time(millisecond), Timezone
+    ),
     Mod = mod(Format),
     Mod:from_datetimezone(Datetimezone).
 

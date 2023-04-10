@@ -36,7 +36,7 @@ Add `ncalendar` to your project dependencies.
 
 Currently, `ncalendar` supports the following formats:
 - `iso8601`
-- `iso8601_ms` miliseconds precision.
+- `iso8601_ms` milliseconds precision.
 
 ## Support
 

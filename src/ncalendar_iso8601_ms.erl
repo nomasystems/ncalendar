@@ -1,4 +1,4 @@
-%%% Copyright 2022 Nomasystems, S.L. http://www.nomasystems.com
+%%% Copyright 2023 Nomasystems, S.L. http://www.nomasystems.com
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@
 
 from_datetimezone({Datetime, Subseconds, <<"Z">>}) ->
     from_datetimezone({Datetime, Subseconds, +0000});
-from_datetimezone({_Datetime, {Milliseconds, _Microseconds}, Timezone} = Datetimezone) ->
+from_datetimezone({_Datetime, {millisecond, Milliseconds}, Timezone} = Datetimezone) ->
     {{Year, Month, Day}, {Hour, Min, Sec}} = ncalendar_util:datetimezone_to_datetime(Datetimezone),
     erlang:list_to_binary([
         pad(4, Year),
@@ -61,7 +61,7 @@ is_valid([Y1, Y2, Y3, Y4, Mo1, Mo2, D1, D2, $T, H1, H2, Mi1, Mi2, S1, S2, $., _M
         _Class:_Term ->
             false
     end;
-is_valid(_) ->
+is_valid(_Value) ->
     false.
 
 to_datetimezone(Value) when is_binary(Value) ->
@@ -79,9 +79,9 @@ to_datetimezone([
     Sec = erlang:list_to_integer([S1, S2]),
     RawTime = {Hour, Min, Sec},
     Millisec = erlang:list_to_integer([Ml1, Ml2, Ml3]),
-    ncalendar_util:datetime_to_datetimezone({RawDate, RawTime}, {Millisec, 0}, Timezone);
+    ncalendar_util:datetime_to_datetimezone({RawDate, RawTime}, {millisecond, Millisec}, Timezone);
 to_datetimezone(Value) ->
-    erlang:throw({error, ncalendar_iso8601_milliseconds, {unrecognized_value, Value}}).
+    erlang:throw({error, ncalendar_iso8601_ms, {unrecognized_value, Value}}).
 
 %%%-----------------------------------------------------------------------------
 %%% INTERNAL FUNCTIONS

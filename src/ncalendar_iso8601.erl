@@ -60,7 +60,7 @@ is_valid([Y1, Y2, Y3, Y4, Mo1, Mo2, D1, D2, $T, H1, H2, Mi1, Mi2, S1, S2 | TZ]) 
         _Class:_Term ->
             false
     end;
-is_valid(_) ->
+is_valid(_Value) ->
     false.
 
 to_datetimezone(Value) when is_binary(Value) ->
@@ -79,7 +79,7 @@ to_datetimezone([Y1, Y2, Y3, Y4, Mo1, Mo2, D1, D2, $T, H1, H2, Mi1, Mi2, S1, S2 
     Min = erlang:list_to_integer([Mi1, Mi2]),
     Sec = erlang:list_to_integer([S1, S2]),
     RawTime = {Hour, Min, Sec},
-    ncalendar_util:datetime_to_datetimezone({RawDate, RawTime}, {0, 0}, Timezone);
+    ncalendar_util:datetime_to_datetimezone({RawDate, RawTime}, {millisecond, 0}, Timezone);
 to_datetimezone(Value) ->
     erlang:throw({error, ncalendar_iso8601, {unrecognized_value, Value}}).
 %%%-----------------------------------------------------------------------------

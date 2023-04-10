@@ -25,7 +25,8 @@
     is_valid_date/1,
     is_valid_time/1,
     is_valid_timezone/1,
-    timestamp_to_datetimezone/2
+    milliseconds_to_datetimezone/2,
+    timestamp_to_milliseconds/1
 ]).
 
 -define(JANUARY_1ST_1970, 62167219200).
@@ -63,10 +64,10 @@ datetimezone_to_gregorian_seconds({Datetime, _Subseconds, Timezone}) ->
 -spec datetimezone_to_timestamp(Datetimezone) -> Result when
     Datetimezone :: datetimezone(),
     Result :: timestamp().
-datetimezone_to_timestamp({Datetime, {Milliseconds, MicroSeconds}, Timezone}) ->
+datetimezone_to_timestamp({Datetime, {millisecond, Milliseconds}, Timezone}) ->
     GregorianSeconds = calendar:datetime_to_gregorian_seconds(Datetime) + timezone_diff(Timezone),
     Secs = GregorianSeconds - ?JANUARY_1ST_1970,
-    MicroSecs = Milliseconds * 1000 + MicroSeconds,
+    MicroSecs = Milliseconds * 1000,
     {Secs div 1000000, Secs rem 1000000, MicroSecs}.
 
 -spec is_valid_date(Date) -> Result when
@@ -89,17 +90,24 @@ is_valid_time(_Time) ->
 is_valid_timezone(Timezone) ->
     lists:member(Timezone, ?TIMEZONES).
 
--spec timestamp_to_datetimezone(Timestamp, Timezone) -> Result when
-    Timestamp :: timestamp(),
+-spec milliseconds_to_datetimezone(Milliseconds, Timezone) -> Result when
+    Milliseconds :: non_neg_integer(),
     Timezone :: timezone(),
     Result :: datetimezone().
-timestamp_to_datetimezone({MSecs, Secs, MicroSecs}, TimeZone) ->
-    Milliseconds = MicroSecs div 1000,
-    MicroSeconds = MicroSecs - Milliseconds * 1000,
-    Subseconds = {Milliseconds, MicroSeconds},
-    GregorianSeconds = MSecs * 1000000 + Secs + ?JANUARY_1ST_1970,
+milliseconds_to_datetimezone(Milliseconds, TimeZone) ->
+    GregorianSeconds = Milliseconds div 1000,
+    RestMilliseconds = Milliseconds - GregorianSeconds * 1000,
+    Subseconds = {millisecond, RestMilliseconds},
     Datetime = calendar:gregorian_seconds_to_datetime(GregorianSeconds),
     {Datetime, Subseconds, TimeZone}.
+
+-spec timestamp_to_milliseconds(Timestamp) -> Result when
+    Timestamp :: timestamp(),
+    Result :: non_neg_integer().
+timestamp_to_milliseconds({MSecs, Secs, MicroSecs}) ->
+    MilliSecs = MicroSecs div 1000,
+    GregorianSeconds = MSecs * 1000000 + Secs + ?JANUARY_1ST_1970,
+    GregorianSeconds * 1000 + MilliSecs.
 
 %%%-----------------------------------------------------------------------------
 %%% INTERNAL FUNCTIONS

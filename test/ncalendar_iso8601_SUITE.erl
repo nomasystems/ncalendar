@@ -1,4 +1,4 @@
-%%% Copyright 2022 Nomasystems, S.L. http://www.nomasystems.com
+%%% Copyright 2023 Nomasystems, S.L. http://www.nomasystems.com
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -41,22 +41,16 @@ end_per_suite(Conf) ->
 %%%-----------------------------------------------------------------------------
 %%% TEST CASES
 %%%-----------------------------------------------------------------------------
-from_datetime_zone() ->
-    [{userdata, [{doc, "Tests transform datetime to iso8601"}]}].
-
 from_datetime_zone(_Conf) ->
     <<"20140519T100000Z">> = ncalendar_iso8601:from_datetimezone({
-        {{2014, 5, 19}, {10, 0, 0}}, {0, 0}, <<"Z">>
+        {{2014, 5, 19}, {10, 0, 0}}, {millisecond, 0}, <<"Z">>
     }),
     <<"20140519T120000Z">> = ncalendar_iso8601:from_datetimezone({
-        {{2014, 5, 19}, {12, 0, 0}}, {30, 0}, +0000
+        {{2014, 5, 19}, {12, 0, 0}}, {millisecond, 30}, +0000
     }),
     <<"20140601T080000+1100">> = ncalendar_iso8601:from_datetimezone({
-        {{2014, 5, 31}, {21, 0, 0}}, {0, 0}, +1100
+        {{2014, 5, 31}, {21, 0, 0}}, {millisecond, 0}, +1100
     }).
-
-is_valid() ->
-    [{userdata, [{doc, "Tests is a binary valid iso8601"}]}].
 
 is_valid(_Conf) ->
     true = ncalendar_iso8601:is_valid(<<"20140519T100000Z">>),
@@ -72,25 +66,22 @@ is_valid(_Conf) ->
     false = ncalendar_iso8601:is_valid(<<"20140519T240000.000+0300">>),
     false = ncalendar_iso8601:is_valid(<<"20140519T100000.000-3430">>).
 
-to_datetimezone() ->
-    [{userdata, [{doc, "Tests is a binary valid iso8601"}]}].
-
 to_datetimezone(_Conf) ->
-    {{{2014, 5, 19}, {10, 0, 0}}, {0, 0}, +0000} = ncalendar_iso8601:to_datetimezone(
+    {{{2014, 5, 19}, {10, 0, 0}}, {millisecond, 0}, +0000} = ncalendar_iso8601:to_datetimezone(
         <<"20140519T100000Z">>
     ),
-    {{{2014, 5, 19}, {7, 0, 0}}, {0, 0}, +0300} = ncalendar_iso8601:to_datetimezone(
+    {{{2014, 5, 19}, {7, 0, 0}}, {millisecond, 0}, +0300} = ncalendar_iso8601:to_datetimezone(
         <<"20140519T100000+0300">>
     ),
-    {{{2014, 5, 19}, {12, 30, 0}}, {0, 0}, -0230} = ncalendar_iso8601:to_datetimezone(
+    {{{2014, 5, 19}, {12, 30, 0}}, {millisecond, 0}, -0230} = ncalendar_iso8601:to_datetimezone(
         <<"20140519T100000-0230">>
     ),
-    {{{2014, 5, 19}, {10, 0, 0}}, {0, 0}, +0000} = ncalendar_iso8601:to_datetimezone(
+    {{{2014, 5, 19}, {10, 0, 0}}, {millisecond, 0}, +0000} = ncalendar_iso8601:to_datetimezone(
         <<"20140519T100000.000Z">>
     ),
-    {{{2014, 5, 19}, {7, 0, 0}}, {0, 0}, +0300} = ncalendar_iso8601:to_datetimezone(
+    {{{2014, 5, 19}, {7, 0, 0}}, {millisecond, 0}, +0300} = ncalendar_iso8601:to_datetimezone(
         <<"20140519T100000.000+0300">>
     ),
-    {{{2014, 5, 19}, {12, 30, 0}}, {0, 0}, -0230} = ncalendar_iso8601:to_datetimezone(
-        <<"20140519T100000.000-0230">>
+    {{{2014, 5, 19}, {12, 30, 0}}, {millisecond, 0}, -0230} = ncalendar_iso8601:to_datetimezone(
+        <<"20140519T100000.030-0230">>
     ).
