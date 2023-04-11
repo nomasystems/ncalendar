@@ -26,7 +26,6 @@
 %%%-----------------------------------------------------------------------------
 %%% EXTERNAL EXPORTS
 %%%-----------------------------------------------------------------------------
-
 from_datetimezone({Datetime, Subseconds, <<"Z">>}) ->
     from_datetimezone({Datetime, Subseconds, +0000});
 from_datetimezone({_Datetime, {millisecond, Milliseconds}, Timezone} = Datetimezone) ->
