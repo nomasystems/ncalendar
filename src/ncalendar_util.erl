@@ -18,36 +18,60 @@
 
 %%% EXTERNAL EXPORTS
 -export([
-    datetime_to_datetimezone/2,
+    datetime_to_datetimezone/3,
     datetimezone_to_datetime/1,
+    datetimezone_to_gregorian_seconds/1,
+    datetimezone_to_timestamp/1,
     is_valid_date/1,
     is_valid_time/1,
-    is_valid_timezone/1
+    is_valid_timezone/1,
+    milliseconds_to_datetimezone/2,
+    pad/2,
+    timestamp_to_milliseconds/1
 ]).
+
+%%% MACROS
+-define(JANUARY_1ST_1970, 62167219200).
 
 %%%-----------------------------------------------------------------------------
 %%% EXTERNAL EXPORTS
 %%%-----------------------------------------------------------------------------
--spec datetime_to_datetimezone(Datetime, Timezone) -> Result when
+-spec datetime_to_datetimezone(Datetime, Subseconds, Timezone) -> Result when
     Datetime :: datetime(),
+    Subseconds :: sub_seconds(),
     Timezone :: timezone(),
     Result :: datetimezone().
-datetime_to_datetimezone(Datetime, +0000) ->
-    {Datetime, +0000};
-datetime_to_datetimezone(RawDatetime, Timezone) ->
+datetime_to_datetimezone(Datetime, Subseconds, +0000) ->
+    {Datetime, Subseconds, +0000};
+datetime_to_datetimezone(RawDatetime, Subseconds, Timezone) ->
     GregorianSeconds =
         calendar:datetime_to_gregorian_seconds(RawDatetime) - timezone_diff(Timezone),
     Datetime = calendar:gregorian_seconds_to_datetime(GregorianSeconds),
-    {Datetime, Timezone}.
+    {Datetime, Subseconds, Timezone}.
 
 -spec datetimezone_to_datetime(Datetimezone) -> Result when
     Datetimezone :: datetimezone(),
     Result :: datetime().
-datetimezone_to_datetime({Datetime, +0000}) ->
+datetimezone_to_datetime({Datetime, _Subseconds, +0000}) ->
     Datetime;
-datetimezone_to_datetime({Datetime, Timezone}) ->
+datetimezone_to_datetime({Datetime, _Subseconds, Timezone}) ->
     LocalSeconds = calendar:datetime_to_gregorian_seconds(Datetime) + timezone_diff(Timezone),
     calendar:gregorian_seconds_to_datetime(LocalSeconds).
+
+-spec datetimezone_to_gregorian_seconds(Datetimezone) -> Result when
+    Datetimezone :: datetimezone(),
+    Result :: gregorian_seconds().
+datetimezone_to_gregorian_seconds({Datetime, _Subseconds, Timezone}) ->
+    calendar:datetime_to_gregorian_seconds(Datetime) + timezone_diff(Timezone).
+
+-spec datetimezone_to_timestamp(Datetimezone) -> Result when
+    Datetimezone :: datetimezone(),
+    Result :: timestamp().
+datetimezone_to_timestamp({Datetime, {millisecond, Milliseconds}, Timezone}) ->
+    GregorianSeconds = calendar:datetime_to_gregorian_seconds(Datetime) + timezone_diff(Timezone),
+    Secs = GregorianSeconds - ?JANUARY_1ST_1970,
+    MicroSecs = Milliseconds * 1000,
+    {Secs div 1000000, Secs rem 1000000, MicroSecs}.
 
 -spec is_valid_date(Date) -> Result when
     Date :: date(),
@@ -68,6 +92,48 @@ is_valid_time(_Time) ->
     Result :: boolean().
 is_valid_timezone(Timezone) ->
     lists:member(Timezone, ?TIMEZONES).
+
+-spec milliseconds_to_datetimezone(Milliseconds, Timezone) -> Result when
+    Milliseconds :: non_neg_integer(),
+    Timezone :: timezone(),
+    Result :: datetimezone().
+milliseconds_to_datetimezone(Milliseconds, TimeZone) ->
+    GregorianSeconds = Milliseconds div 1000,
+    RestMilliseconds = Milliseconds - GregorianSeconds * 1000,
+    Subseconds = {millisecond, RestMilliseconds},
+    Datetime = calendar:gregorian_seconds_to_datetime(GregorianSeconds),
+    {Datetime, Subseconds, TimeZone}.
+
+-spec pad(Size, Number) -> Result when
+    Size :: non_neg_integer(),
+    Number :: non_neg_integer(),
+    Result :: list().
+pad(2, N) when N > 9 ->
+    erlang:integer_to_list(N);
+pad(2, N) ->
+    [$0 | erlang:integer_to_list(N)];
+pad(3, N) when N > 99 ->
+    erlang:integer_to_list(N);
+pad(3, N) when N > 9 ->
+    [$0 | erlang:integer_to_list(N)];
+pad(3, N) ->
+    [$0, $0 | erlang:integer_to_list(N)];
+pad(4, N) when N > 999 ->
+    erlang:integer_to_list(N);
+pad(4, N) when N > 99 ->
+    [$0 | erlang:integer_to_list(N)];
+pad(4, N) when N > 9 ->
+    [$0, $0 | erlang:integer_to_list(N)];
+pad(4, N) ->
+    [$0, $0, $0 | erlang:integer_to_list(N)].
+
+-spec timestamp_to_milliseconds(Timestamp) -> Result when
+    Timestamp :: timestamp(),
+    Result :: non_neg_integer().
+timestamp_to_milliseconds({MSecs, Secs, MicroSecs}) ->
+    MilliSecs = MicroSecs div 1000,
+    GregorianSeconds = MSecs * 1000000 + Secs + ?JANUARY_1ST_1970,
+    GregorianSeconds * 1000 + MilliSecs.
 
 %%%-----------------------------------------------------------------------------
 %%% INTERNAL FUNCTIONS

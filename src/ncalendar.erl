@@ -41,9 +41,6 @@
     value/0
 ]).
 
-%%% MACROS
--define(JANUARY_1ST_1970, 62167219200).
-
 %%%-----------------------------------------------------------------------------
 %%% EXTERNAL EXPORTS
 %%%-----------------------------------------------------------------------------
@@ -62,8 +59,9 @@ convert(From, To, Value) ->
     Datetime :: datetime(),
     Result :: value().
 from_datetime(Format, Datetime) ->
+    Datetimezone = {Datetime, {0, 0}, +0000},
     Mod = mod(Format),
-    Mod:from_datetimezone({Datetime, +0000}).
+    Mod:from_datetimezone(Datetimezone).
 
 -spec from_gregorian_seconds(Format, GregorianSeconds) -> Result when
     Format :: format(),
@@ -71,15 +69,19 @@ from_datetime(Format, Datetime) ->
     Result :: value().
 from_gregorian_seconds(Format, GregorianSeconds) ->
     Datetime = calendar:gregorian_seconds_to_datetime(GregorianSeconds),
-    from_datetime(Format, Datetime).
+    Datetimezone = {Datetime, {0, 0}, +0000},
+    Mod = mod(Format),
+    Mod:from_datetimezone(Datetimezone).
 
 -spec from_timestamp(Format, Timestamp) -> Result when
     Format :: format(),
     Timestamp :: timestamp(),
     Result :: value().
-from_timestamp(Format, {MSecs, Secs, _MicroSecs}) ->
-    GregorianSeconds = MSecs * 1000000 + Secs + ?JANUARY_1ST_1970,
-    from_gregorian_seconds(Format, GregorianSeconds).
+from_timestamp(Format, Timestamp) ->
+    Milliseconds = ncalendar_util:timestamp_to_milliseconds(Timestamp),
+    Datetimezone = ncalendar_util:milliseconds_to_datetimezone(Milliseconds, +0000),
+    Mod = mod(Format),
+    Mod:from_datetimezone(Datetimezone).
 
 -spec is_valid(Format, Value) -> Result when
     Format :: format(),
@@ -100,9 +102,11 @@ now(Format) ->
     Timezone :: timezone(),
     Result :: value().
 now(Format, Timezone) ->
-    {Date, Time} = erlang:universaltime(),
+    Datetimezone = ncalendar_util:milliseconds_to_datetimezone(
+        erlang:system_time(millisecond), Timezone
+    ),
     Mod = mod(Format),
-    Mod:from_datetimezone({{Date, Time}, Timezone}).
+    Mod:from_datetimezone(Datetimezone).
 
 -spec to_datetime(Format, Value) -> Result when
     Format :: format(),
@@ -118,22 +122,25 @@ to_datetime(Format, Value) ->
     Value :: value(),
     Result :: gregorian_seconds().
 to_gregorian_seconds(Format, Value) ->
-    Datetime = to_datetime(Format, Value),
-    calendar:datetime_to_gregorian_seconds(Datetime).
+    Mod = mod(Format),
+    Datetimezone = Mod:to_datetimezone(Value),
+    ncalendar_util:datetimezone_to_gregorian_seconds(Datetimezone).
 
 -spec to_timestamp(Format, Value) -> Result when
     Format :: format(),
     Value :: value(),
     Result :: timestamp().
 to_timestamp(Format, Value) ->
-    GregorianSeconds = to_gregorian_seconds(Format, Value),
-    Secs = GregorianSeconds - ?JANUARY_1ST_1970,
-    {Secs div 1000000, Secs rem 1000000, 0}.
+    Mod = mod(Format),
+    Datetimezone = Mod:to_datetimezone(Value),
+    ncalendar_util:datetimezone_to_timestamp(Datetimezone).
 
 %%%-----------------------------------------------------------------------------
 %%% INTERNAL FUNCTIONS
 %%%-----------------------------------------------------------------------------
 mod(iso8601) ->
     ncalendar_iso8601;
+mod(iso8601_ms) ->
+    ncalendar_iso8601_ms;
 mod(Format) ->
     erlang:throw({error, ncalendar, {unsupported_format, Format}}).

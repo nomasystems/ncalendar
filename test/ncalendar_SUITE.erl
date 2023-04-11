@@ -22,6 +22,7 @@
 all() ->
     [
         {group, properties},
+        convert,
         datetime,
         gregorian_seconds,
         timestamp
@@ -71,6 +72,13 @@ there_and_back_again(Conf) ->
         ncalendar_properties:prop_there_and_back_again(),
         Conf
     ).
+
+convert(_Conf) ->
+    ISO8601 = <<"20140519T100000Z">>,
+    ISO8601Milliseconds = <<"20140519T100000.000Z">>,
+
+    ISO8601Milliseconds = ncalendar:convert(iso8601, iso8601_ms, ISO8601),
+    ISO8601 = ncalendar:convert(iso8601_ms, iso8601, ISO8601Milliseconds).
 
 datetime(_Conf) ->
     Datetime = calendar:universal_time(),
