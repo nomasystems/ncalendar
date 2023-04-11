@@ -32,15 +32,15 @@ from_datetimezone({Datetime, Subseconds, <<"Z">>}) ->
 from_datetimezone({_Datetime, {millisecond, Milliseconds}, Timezone} = Datetimezone) ->
     {{Year, Month, Day}, {Hour, Min, Sec}} = ncalendar_util:datetimezone_to_datetime(Datetimezone),
     erlang:list_to_binary([
-        pad(4, Year),
-        pad(2, Month),
-        pad(2, Day),
+        ncalendar_util:pad(4, Year),
+        ncalendar_util:pad(2, Month),
+        ncalendar_util:pad(2, Day),
         "T",
-        pad(2, Hour),
-        pad(2, Min),
-        pad(2, Sec),
+        ncalendar_util:pad(2, Hour),
+        ncalendar_util:pad(2, Min),
+        ncalendar_util:pad(2, Sec),
         ".",
-        pad(3, Milliseconds),
+        ncalendar_util:pad(3, Milliseconds),
         timezone(Timezone)
     ]).
 
@@ -86,25 +86,6 @@ to_datetimezone(Value) ->
 %%%-----------------------------------------------------------------------------
 %%% INTERNAL FUNCTIONS
 %%%-----------------------------------------------------------------------------
-pad(2, N) when N > 9 ->
-    erlang:integer_to_list(N);
-pad(2, N) ->
-    [$0 | erlang:integer_to_list(N)];
-pad(3, N) when N > 99 ->
-    erlang:integer_to_list(N);
-pad(3, N) when N > 9 ->
-    [$0 | erlang:integer_to_list(N)];
-pad(3, N) ->
-    [$0, $0 | erlang:integer_to_list(N)];
-pad(4, N) when N > 999 ->
-    erlang:integer_to_list(N);
-pad(4, N) when N > 99 ->
-    [$0 | erlang:integer_to_list(N)];
-pad(4, N) when N > 9 ->
-    [$0, $0 | erlang:integer_to_list(N)];
-pad(4, N) ->
-    [$0, $0, $0 | erlang:integer_to_list(N)].
-
 timezone(Timezone) ->
     case ncalendar_util:is_valid_timezone(Timezone) of
         true ->

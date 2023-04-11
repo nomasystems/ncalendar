@@ -72,6 +72,7 @@ there_and_back_again(Conf) ->
         ncalendar_properties:prop_there_and_back_again(),
         Conf
     ).
+
 convert(_Conf) ->
     ISO8601 = <<"20140519T100000Z">>,
     ISO8601Milliseconds = <<"20140519T100000.000Z">>,

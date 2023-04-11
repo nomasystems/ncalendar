@@ -26,10 +26,13 @@
     is_valid_time/1,
     is_valid_timezone/1,
     milliseconds_to_datetimezone/2,
+    pad/2,
     timestamp_to_milliseconds/1
 ]).
 
+%%% MACROS
 -define(JANUARY_1ST_1970, 62167219200).
+
 %%%-----------------------------------------------------------------------------
 %%% EXTERNAL EXPORTS
 %%%-----------------------------------------------------------------------------
@@ -100,6 +103,29 @@ milliseconds_to_datetimezone(Milliseconds, TimeZone) ->
     Subseconds = {millisecond, RestMilliseconds},
     Datetime = calendar:gregorian_seconds_to_datetime(GregorianSeconds),
     {Datetime, Subseconds, TimeZone}.
+
+-spec pad(Size, Number) -> Result when
+    Size :: non_neg_integer(),
+    Number :: non_neg_integer(),
+    Result :: list().
+pad(2, N) when N > 9 ->
+    erlang:integer_to_list(N);
+pad(2, N) ->
+    [$0 | erlang:integer_to_list(N)];
+pad(3, N) when N > 99 ->
+    erlang:integer_to_list(N);
+pad(3, N) when N > 9 ->
+    [$0 | erlang:integer_to_list(N)];
+pad(3, N) ->
+    [$0, $0 | erlang:integer_to_list(N)];
+pad(4, N) when N > 999 ->
+    erlang:integer_to_list(N);
+pad(4, N) when N > 99 ->
+    [$0 | erlang:integer_to_list(N)];
+pad(4, N) when N > 9 ->
+    [$0, $0 | erlang:integer_to_list(N)];
+pad(4, N) ->
+    [$0, $0, $0 | erlang:integer_to_list(N)].
 
 -spec timestamp_to_milliseconds(Timestamp) -> Result when
     Timestamp :: timestamp(),
