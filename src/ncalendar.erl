@@ -52,7 +52,8 @@
 convert(From, To, Value) ->
     ModFrom = mod(From),
     ModTo = mod(To),
-    ModTo:from_datetimezone(ModFrom:to_datetimezone(Value)).
+    Opts = opts(To),
+    ModTo:from_datetimezone(ModFrom:to_datetimezone(Value), Opts).
 
 -spec from_datetime(Format, Datetime) -> Result when
     Format :: format(),
@@ -61,7 +62,8 @@ convert(From, To, Value) ->
 from_datetime(Format, Datetime) ->
     Datetimezone = {Datetime, {0, 0}, +0000},
     Mod = mod(Format),
-    Mod:from_datetimezone(Datetimezone).
+    Opts = opts(Format),
+    Mod:from_datetimezone(Datetimezone, Opts).
 
 -spec from_gregorian_seconds(Format, GregorianSeconds) -> Result when
     Format :: format(),
@@ -71,7 +73,8 @@ from_gregorian_seconds(Format, GregorianSeconds) ->
     Datetime = calendar:gregorian_seconds_to_datetime(GregorianSeconds),
     Datetimezone = {Datetime, {0, 0}, +0000},
     Mod = mod(Format),
-    Mod:from_datetimezone(Datetimezone).
+    Opts = opts(Format),
+    Mod:from_datetimezone(Datetimezone, Opts).
 
 -spec from_timestamp(Format, Timestamp) -> Result when
     Format :: format(),
@@ -81,7 +84,8 @@ from_timestamp(Format, Timestamp) ->
     Milliseconds = ncalendar_util:timestamp_to_milliseconds(Timestamp),
     Datetimezone = ncalendar_util:milliseconds_to_datetimezone(Milliseconds, +0000),
     Mod = mod(Format),
-    Mod:from_datetimezone(Datetimezone).
+    Opts = opts(Format),
+    Mod:from_datetimezone(Datetimezone, Opts).
 
 -spec is_valid(Format, Value) -> Result when
     Format :: format(),
@@ -89,7 +93,8 @@ from_timestamp(Format, Timestamp) ->
     Result :: boolean().
 is_valid(Format, Value) ->
     Mod = mod(Format),
-    Mod:is_valid(Value).
+    Opts = opts(Format),
+    Mod:is_valid(Value, Opts).
 
 -spec now(Format) -> Result when
     Format :: format(),
@@ -106,7 +111,8 @@ now(Format, Timezone) ->
         erlang:system_time(millisecond), Timezone
     ),
     Mod = mod(Format),
-    Mod:from_datetimezone(Datetimezone).
+    Opts = opts(Format),
+    Mod:from_datetimezone(Datetimezone, Opts).
 
 -spec to_datetime(Format, Value) -> Result when
     Format :: format(),
@@ -138,13 +144,19 @@ to_timestamp(Format, Value) ->
 %%%-----------------------------------------------------------------------------
 %%% INTERNAL FUNCTIONS
 %%%-----------------------------------------------------------------------------
+
+opts(iso8601_ms) ->
+    #{precision => millisecond};
+opts({iso8601, Opts}) ->
+    Opts;
+opts(_Format) ->
+    #{}.
+
 mod(iso8601) ->
     ncalendar_iso8601;
 mod(iso8601_ms) ->
-    ncalendar_iso8601_ms;
-mod(iso8601_ext) ->
-    ncalendar_iso8601_ext;
-mod(iso8601_ext_ms) ->
-    ncalendar_iso8601_ext_ms;
+    ncalendar_iso8601;
+mod({iso8601, _Opts}) ->
+    ncalendar_iso8601;
 mod(Format) ->
     erlang:throw({error, ncalendar, {unsupported_format, Format}}).

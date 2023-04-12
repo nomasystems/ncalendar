@@ -19,12 +19,14 @@
 %%%-----------------------------------------------------------------------------
 %%% BEHAVIOUR CALLBACKS
 %%%-----------------------------------------------------------------------------
--callback from_datetimezone(Datetimezone) -> Result when
+-callback from_datetimezone(Datetimezone, Opts) -> Result when
     Datetimezone :: datetimezone(),
+    Opts :: map(),
     Result :: value().
 
--callback is_valid(Value) -> Result when
+-callback is_valid(Value, Opts) -> Result when
     Value :: value(),
+    Opts :: map(),
     Result :: boolean().
 
 -callback to_datetimezone(Value) -> Result when
