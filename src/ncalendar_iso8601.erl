@@ -20,7 +20,6 @@
 -export([
     from_datetimezone/2,
     is_valid/2,
-    timezone/1,
     to_datetimezone/1
 ]).
 
@@ -248,14 +247,6 @@ is_valid([Y1, Y2, Y3, Y4, Mo1, Mo2, D1, D2, $T, H1, H2, Mi1, Mi2, S1, S2 | TZ], 
 is_valid(_Value, _Opts) ->
     false.
 
-timezone(Timezone) ->
-    case ncalendar_util:is_valid_timezone(Timezone) of
-        true ->
-            format_timezone(Timezone);
-        _False ->
-            erlang:throw({error, ncalendar, {unsupported_timezone, Timezone}})
-    end.
-
 to_datetimezone(Value) when is_binary(Value) ->
     to_datetimezone(erlang:binary_to_list(Value));
 %% Extended Milliseconds
@@ -348,6 +339,14 @@ resolve_timezone_alias("Z") ->
     "+0000";
 resolve_timezone_alias(TZ) ->
     TZ.
+
+timezone(Timezone) ->
+    case ncalendar_util:is_valid_timezone(Timezone) of
+        true ->
+            format_timezone(Timezone);
+        _False ->
+            erlang:throw({error, ncalendar, {unsupported_timezone, Timezone}})
+    end.
 
 to_date(YearList, MonthList, DayList) ->
     Year = erlang:list_to_integer(YearList),
