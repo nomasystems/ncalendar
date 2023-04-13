@@ -48,6 +48,9 @@
     value/0
 ]).
 
+%%% MACROS
+-define(JANUARY_1ST_1970_MS, 62167219200000).
+
 %%%-----------------------------------------------------------------------------
 %%% EXTERNAL EXPORTS
 %%%-----------------------------------------------------------------------------
@@ -159,7 +162,8 @@ now(Format, Timezone) ->
     Result :: value().
 now(Format, Timezone, Opts) ->
     Datetimezone = ncalendar_util:milliseconds_to_datetimezone(
-        erlang:system_time(millisecond), Timezone
+        erlang:system_time(millisecond) + ?JANUARY_1ST_1970_MS,
+        Timezone
     ),
     Mod = mod(Format),
     Mod:from_datetimezone(Datetimezone, Opts).
