@@ -109,7 +109,7 @@ is_valid(_Conf) ->
     false = ncalendar_iso8601:is_valid(<<"2015-11-31T10:00:00Z">>, Opts),
     false = ncalendar_iso8601:is_valid(<<"2014-05-19T24:00:00+0300">>, Opts),
     false = ncalendar_iso8601:is_valid(<<"2014-05-19T10:00:00-3430">>, Opts),
-    
+
     false = ncalendar_iso8601:is_valid(<<"2015-11-31T10:00:00.000Z">>, Opts),
     false = ncalendar_iso8601:is_valid(<<"2014-05-19T24:00:00.000+0300">>, Opts),
     false = ncalendar_iso8601:is_valid(<<"2014-05-19T10:00:00.000-3430">>, Opts).
@@ -143,7 +143,7 @@ is_valid_ms(_Conf) ->
     false = ncalendar_iso8601:is_valid(<<"2015-11-31T10:00:00Z">>, Opts),
     false = ncalendar_iso8601:is_valid(<<"2014-05-19T24:00:00+0300">>, Opts),
     false = ncalendar_iso8601:is_valid(<<"2014-05-19T10:00:00-3430">>, Opts),
-    
+
     false = ncalendar_iso8601:is_valid(<<"2015-11-31T10:00:00.000Z">>, Opts),
     false = ncalendar_iso8601:is_valid(<<"2014-05-19T24:00:00.000+0300">>, Opts),
     false = ncalendar_iso8601:is_valid(<<"2014-05-19T10:00:00.000-3430">>, Opts).
@@ -177,7 +177,7 @@ is_valid_ext(_Conf) ->
     false = ncalendar_iso8601:is_valid(<<"2015-11-31T10:00:00Z">>, Opts),
     false = ncalendar_iso8601:is_valid(<<"2014-05-19T24:00:00+0300">>, Opts),
     false = ncalendar_iso8601:is_valid(<<"2014-05-19T10:00:00-3430">>, Opts),
-    
+
     false = ncalendar_iso8601:is_valid(<<"2015-11-31T10:00:00.000Z">>, Opts),
     false = ncalendar_iso8601:is_valid(<<"2014-05-19T24:00:00.000+0300">>, Opts),
     false = ncalendar_iso8601:is_valid(<<"2014-05-19T10:00:00.000-3430">>, Opts).
@@ -211,7 +211,7 @@ is_valid_ext_ms(_Conf) ->
     false = ncalendar_iso8601:is_valid(<<"2015-11-31T10:00:00Z">>, Opts),
     false = ncalendar_iso8601:is_valid(<<"2014-05-19T24:00:00+0300">>, Opts),
     false = ncalendar_iso8601:is_valid(<<"2014-05-19T10:00:00-3430">>, Opts),
-    
+
     false = ncalendar_iso8601:is_valid(<<"2015-11-31T10:00:00.000Z">>, Opts),
     false = ncalendar_iso8601:is_valid(<<"2014-05-19T24:00:00.000+0300">>, Opts),
     false = ncalendar_iso8601:is_valid(<<"2014-05-19T10:00:00.000-3430">>, Opts).

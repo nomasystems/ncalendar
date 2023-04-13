@@ -21,12 +21,19 @@
 
 prop_there_and_back_again() ->
     ?FORALL(
-        Format,
-        ncalendar_dom:format(),
+        {Format, Opts},
+        ?LET(
+            Format,
+            ncalendar_dom:format(),
+            {
+                Format,
+                ncalendar_dom:opts(Format)
+            }
+        ),
         begin
-            Now = ncalendar:now(Format),
-            true = ncalendar:is_valid(Format, Now),
-            Now = ncalendar:convert(Format, Format, Now),
+            Now = ncalendar:now(Format, +0000, Opts),
+            true = ncalendar:is_valid(Format, Now, Opts),
+            Now = ncalendar:convert(Format, Format, Now, Opts),
             true
         end
     ).

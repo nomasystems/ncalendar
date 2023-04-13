@@ -23,6 +23,15 @@
     to_datetimezone/1
 ]).
 
+%% TYPES
+-type opts() :: #{precision => precision(), extended => boolean()}.
+-type precision() :: millisecond.
+
+-export_type([
+    opts/0,
+    precision/0
+]).
+
 %%%-----------------------------------------------------------------------------
 %%% EXTERNAL EXPORTS
 %%%-----------------------------------------------------------------------------
@@ -47,7 +56,7 @@ from_datetimezone({_Datetime, {millisecond, Milliseconds}, Timezone} = Datetimez
         ncalendar_util:pad(2, Sec),
         ".",
         ncalendar_util:pad(3, Milliseconds),
-        ncalendar_iso8601:timezone(Timezone)
+        timezone(Timezone)
     ]);
 %% Extended
 from_datetimezone({_Datetime, _Subseconds, Timezone} = Datetimezone, #{extended := true}) ->
@@ -64,7 +73,7 @@ from_datetimezone({_Datetime, _Subseconds, Timezone} = Datetimezone, #{extended 
         ncalendar_util:pad(2, Min),
         ":",
         ncalendar_util:pad(2, Sec),
-        ncalendar_iso8601:timezone(Timezone)
+        timezone(Timezone)
     ]);
 %% Milliseconds
 from_datetimezone({_Datetime, {millisecond, Milliseconds}, Timezone} = Datetimezone, #{

@@ -18,16 +18,30 @@
 
 %%% EXTERNAL EXPORTS
 -export([
-    format/0
+    format/0,
+    opts/1
 ]).
-
-%%% MACROS
--define(OPTS_MS, #{precision => millisecond}).
--define(OPTS_EXT, #{extended => true}).
--define(OPTS_EXT_MS, #{precision => millisecond, extended => true}).
 
 %%%-----------------------------------------------------------------------------
 %%% EXTERNAL EXPORTS
 %%%-----------------------------------------------------------------------------
 format() ->
-    triq_dom:oneof([iso8601, iso8601_ms, {iso8601, ?OPTS_MS}, {iso8601, ?OPTS_EXT}, {iso8601, ?OPTS_EXT_MS}]).
+    triq_dom:oneof([iso8601]).
+
+opts(iso8601) ->
+    ?LET(
+        {
+            Precision,
+            Extended
+        },
+        {
+            triq_dom:elements([millisecond, undefined]),
+            triq_dom:bool()
+        },
+        #{
+            precision => Precision,
+            extended => Extended
+        }
+    );
+opts(_Format) ->
+    triq_dom:return(#{}).

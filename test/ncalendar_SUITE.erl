@@ -84,21 +84,21 @@ convert(_Conf) ->
     ISO8601Ext = <<"2014-05-19T10:00:00Z">>,
     ISO8601ExtMs = <<"2014-05-19T10:00:00.000Z">>,
 
-    ISO8601Ms = ncalendar:convert(iso8601, {iso8601, ?OPTS_MS}, ISO8601),
-    ISO8601Ext = ncalendar:convert(iso8601, {iso8601, ?OPTS_EXT}, ISO8601),
-    ISO8601ExtMs = ncalendar:convert(iso8601, {iso8601, ?OPTS_EXT_MS}, ISO8601),
+    ISO8601Ms = ncalendar:convert(iso8601, iso8601, ISO8601, ?OPTS_MS),
+    ISO8601Ext = ncalendar:convert(iso8601, iso8601, ISO8601, ?OPTS_EXT),
+    ISO8601ExtMs = ncalendar:convert(iso8601, iso8601, ISO8601, ?OPTS_EXT_MS),
 
-    ISO8601 = ncalendar:convert({iso8601, ?OPTS_MS}, iso8601, ISO8601Ms),
-    ISO8601Ext = ncalendar:convert({iso8601, ?OPTS_MS}, {iso8601, ?OPTS_EXT}, ISO8601Ms),
-    ISO8601ExtMs = ncalendar:convert({iso8601, ?OPTS_MS}, {iso8601, ?OPTS_EXT_MS}, ISO8601Ms),
+    ISO8601 = ncalendar:convert(iso8601, iso8601, ISO8601Ms),
+    ISO8601Ext = ncalendar:convert(iso8601, iso8601, ISO8601Ms, ?OPTS_EXT),
+    ISO8601ExtMs = ncalendar:convert(iso8601, iso8601, ISO8601Ms, ?OPTS_EXT_MS),
 
-    ISO8601 = ncalendar:convert({iso8601, ?OPTS_EXT}, iso8601, ISO8601Ext),
-    ISO8601Ms = ncalendar:convert({iso8601, ?OPTS_EXT}, {iso8601, ?OPTS_MS}, ISO8601Ext),
-    ISO8601ExtMs = ncalendar:convert({iso8601, ?OPTS_EXT}, {iso8601, ?OPTS_EXT_MS}, ISO8601Ext),
+    ISO8601 = ncalendar:convert(iso8601, iso8601, ISO8601Ext),
+    ISO8601Ms = ncalendar:convert(iso8601, iso8601, ISO8601Ext, ?OPTS_MS),
+    ISO8601ExtMs = ncalendar:convert(iso8601, iso8601, ISO8601Ext, ?OPTS_EXT_MS),
 
-    ISO8601 = ncalendar:convert({iso8601, ?OPTS_EXT_MS}, iso8601, ISO8601ExtMs),
-    ISO8601Ms = ncalendar:convert({iso8601, ?OPTS_EXT_MS}, {iso8601, ?OPTS_MS}, ISO8601ExtMs),
-    ISO8601Ext = ncalendar:convert({iso8601, ?OPTS_EXT_MS}, {iso8601, ?OPTS_EXT}, ISO8601ExtMs).
+    ISO8601 = ncalendar:convert(iso8601, iso8601, ISO8601ExtMs),
+    ISO8601Ms = ncalendar:convert(iso8601, iso8601, ISO8601ExtMs, ?OPTS_MS),
+    ISO8601Ext = ncalendar:convert(iso8601, iso8601, ISO8601ExtMs, ?OPTS_EXT).
 
 datetime(_Conf) ->
     Datetime = calendar:universal_time(),

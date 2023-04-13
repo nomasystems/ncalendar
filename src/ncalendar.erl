@@ -19,12 +19,18 @@
 %%% EXTERNAL EXPORTS
 -export([
     convert/3,
+    convert/4,
     from_datetime/2,
+    from_datetime/3,
     from_gregorian_seconds/2,
+    from_gregorian_seconds/3,
     from_timestamp/2,
+    from_timestamp/3,
     is_valid/2,
+    is_valid/3,
     now/1,
     now/2,
+    now/3,
     to_datetime/2,
     to_gregorian_seconds/2,
     to_timestamp/2
@@ -35,6 +41,7 @@
     datetime/0,
     format/0,
     gregorian_seconds/0,
+    opts/0,
     timestamp/0,
     timezone/0,
     timezone_alias/0,
@@ -50,9 +57,17 @@
     Value :: value(),
     Result :: value().
 convert(From, To, Value) ->
+    convert(From, To, Value, #{}).
+
+-spec convert(From, To, Value, Opts) -> Result when
+    From :: format(),
+    To :: format(),
+    Value :: value(),
+    Opts :: opts(),
+    Result :: value().
+convert(From, To, Value, Opts) ->
     ModFrom = mod(From),
     ModTo = mod(To),
-    Opts = opts(To),
     ModTo:from_datetimezone(ModFrom:to_datetimezone(Value), Opts).
 
 -spec from_datetime(Format, Datetime) -> Result when
@@ -60,9 +75,16 @@ convert(From, To, Value) ->
     Datetime :: datetime(),
     Result :: value().
 from_datetime(Format, Datetime) ->
-    Datetimezone = {Datetime, {0, 0}, +0000},
+    from_datetime(Format, Datetime, #{}).
+
+-spec from_datetime(Format, Datetime, Opts) -> Result when
+    Format :: format(),
+    Datetime :: datetime(),
+    Opts :: opts(),
+    Result :: value().
+from_datetime(Format, Datetime, Opts) ->
+    Datetimezone = {Datetime, {millisecond, 0}, +0000},
     Mod = mod(Format),
-    Opts = opts(Format),
     Mod:from_datetimezone(Datetimezone, Opts).
 
 -spec from_gregorian_seconds(Format, GregorianSeconds) -> Result when
@@ -70,10 +92,17 @@ from_datetime(Format, Datetime) ->
     GregorianSeconds :: gregorian_seconds(),
     Result :: value().
 from_gregorian_seconds(Format, GregorianSeconds) ->
+    from_gregorian_seconds(Format, GregorianSeconds, #{}).
+
+-spec from_gregorian_seconds(Format, GregorianSeconds, Opts) -> Result when
+    Format :: format(),
+    GregorianSeconds :: gregorian_seconds(),
+    Opts :: opts(),
+    Result :: value().
+from_gregorian_seconds(Format, GregorianSeconds, Opts) ->
     Datetime = calendar:gregorian_seconds_to_datetime(GregorianSeconds),
-    Datetimezone = {Datetime, {0, 0}, +0000},
+    Datetimezone = {Datetime, {millisecond, 0}, +0000},
     Mod = mod(Format),
-    Opts = opts(Format),
     Mod:from_datetimezone(Datetimezone, Opts).
 
 -spec from_timestamp(Format, Timestamp) -> Result when
@@ -81,10 +110,17 @@ from_gregorian_seconds(Format, GregorianSeconds) ->
     Timestamp :: timestamp(),
     Result :: value().
 from_timestamp(Format, Timestamp) ->
+    from_timestamp(Format, Timestamp, #{}).
+
+-spec from_timestamp(Format, Timestamp, Opts) -> Result when
+    Format :: format(),
+    Timestamp :: timestamp(),
+    Opts :: opts(),
+    Result :: value().
+from_timestamp(Format, Timestamp, Opts) ->
     Milliseconds = ncalendar_util:timestamp_to_milliseconds(Timestamp),
     Datetimezone = ncalendar_util:milliseconds_to_datetimezone(Milliseconds, +0000),
     Mod = mod(Format),
-    Opts = opts(Format),
     Mod:from_datetimezone(Datetimezone, Opts).
 
 -spec is_valid(Format, Value) -> Result when
@@ -92,8 +128,15 @@ from_timestamp(Format, Timestamp) ->
     Value :: value(),
     Result :: boolean().
 is_valid(Format, Value) ->
+    is_valid(Format, Value, #{}).
+
+-spec is_valid(Format, Value, Opts) -> Result when
+    Format :: format(),
+    Value :: value(),
+    Opts :: opts(),
+    Result :: boolean().
+is_valid(Format, Value, Opts) ->
     Mod = mod(Format),
-    Opts = opts(Format),
     Mod:is_valid(Value, Opts).
 
 -spec now(Format) -> Result when
@@ -107,11 +150,18 @@ now(Format) ->
     Timezone :: timezone(),
     Result :: value().
 now(Format, Timezone) ->
+    now(Format, Timezone, #{}).
+
+-spec now(Format, Timezone, Opts) -> Result when
+    Format :: format(),
+    Timezone :: timezone(),
+    Opts :: opts(),
+    Result :: value().
+now(Format, Timezone, Opts) ->
     Datetimezone = ncalendar_util:milliseconds_to_datetimezone(
         erlang:system_time(millisecond), Timezone
     ),
     Mod = mod(Format),
-    Opts = opts(Format),
     Mod:from_datetimezone(Datetimezone, Opts).
 
 -spec to_datetime(Format, Value) -> Result when
@@ -144,19 +194,7 @@ to_timestamp(Format, Value) ->
 %%%-----------------------------------------------------------------------------
 %%% INTERNAL FUNCTIONS
 %%%-----------------------------------------------------------------------------
-
-opts(iso8601_ms) ->
-    #{precision => millisecond};
-opts({iso8601, Opts}) ->
-    Opts;
-opts(_Format) ->
-    #{}.
-
 mod(iso8601) ->
-    ncalendar_iso8601;
-mod(iso8601_ms) ->
-    ncalendar_iso8601;
-mod({iso8601, _Opts}) ->
     ncalendar_iso8601;
 mod(Format) ->
     erlang:throw({error, ncalendar, {unsupported_format, Format}}).
