@@ -16,6 +16,11 @@
 %%% EXTERNAL EXPORTS
 -compile([export_all, nowarn_export_all]).
 
+%%% MACROS
+-define(OPTS_MS, #{precision => millisecond}).
+-define(OPTS_EXT, #{extended => true}).
+-define(OPTS_EXT_MS, #{precision => millisecond, extended => true}).
+
 %%%-----------------------------------------------------------------------------
 %%% SUITE EXPORTS
 %%%-----------------------------------------------------------------------------
@@ -75,10 +80,25 @@ there_and_back_again(Conf) ->
 
 convert(_Conf) ->
     ISO8601 = <<"20140519T100000Z">>,
-    ISO8601Milliseconds = <<"20140519T100000.000Z">>,
+    ISO8601Ms = <<"20140519T100000.000Z">>,
+    ISO8601Ext = <<"2014-05-19T10:00:00Z">>,
+    ISO8601ExtMs = <<"2014-05-19T10:00:00.000Z">>,
 
-    ISO8601Milliseconds = ncalendar:convert(iso8601, iso8601_ms, ISO8601),
-    ISO8601 = ncalendar:convert(iso8601_ms, iso8601, ISO8601Milliseconds).
+    ISO8601Ms = ncalendar:convert(iso8601, iso8601, ISO8601, ?OPTS_MS),
+    ISO8601Ext = ncalendar:convert(iso8601, iso8601, ISO8601, ?OPTS_EXT),
+    ISO8601ExtMs = ncalendar:convert(iso8601, iso8601, ISO8601, ?OPTS_EXT_MS),
+
+    ISO8601 = ncalendar:convert(iso8601, iso8601, ISO8601Ms),
+    ISO8601Ext = ncalendar:convert(iso8601, iso8601, ISO8601Ms, ?OPTS_EXT),
+    ISO8601ExtMs = ncalendar:convert(iso8601, iso8601, ISO8601Ms, ?OPTS_EXT_MS),
+
+    ISO8601 = ncalendar:convert(iso8601, iso8601, ISO8601Ext),
+    ISO8601Ms = ncalendar:convert(iso8601, iso8601, ISO8601Ext, ?OPTS_MS),
+    ISO8601ExtMs = ncalendar:convert(iso8601, iso8601, ISO8601Ext, ?OPTS_EXT_MS),
+
+    ISO8601 = ncalendar:convert(iso8601, iso8601, ISO8601ExtMs),
+    ISO8601Ms = ncalendar:convert(iso8601, iso8601, ISO8601ExtMs, ?OPTS_MS),
+    ISO8601Ext = ncalendar:convert(iso8601, iso8601, ISO8601ExtMs, ?OPTS_EXT).
 
 datetime(_Conf) ->
     Datetime = calendar:universal_time(),

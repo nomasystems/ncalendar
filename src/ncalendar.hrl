@@ -18,9 +18,10 @@
 -type date() :: calendar:date().
 -type datetime() :: calendar:datetime().
 -type datetimezone() :: {datetime(), sub_seconds(), timezone() | timezone_alias()}.
--type format() :: iso8601 | iso8601_ms.
+-type format() :: iso8601.
 -type gregorian_seconds() :: non_neg_integer().
 -type milliseconds() :: non_neg_integer().
+-type opts() :: map().
 -type sub_seconds() :: {millisecond, milliseconds()}.
 -type time() :: calendar:time().
 -type timestamp() :: erlang:timestamp().
