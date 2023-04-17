@@ -31,7 +31,7 @@ prop_there_and_back_again() ->
             }
         ),
         begin
-            Now = ncalendar:now(Format, +0000, Opts),
+            Now = ncalendar:now(Format, +1100, Opts),
             true = ncalendar:is_valid(Format, Now, Opts),
             Now = ncalendar:convert(Format, Format, Now, Opts),
             true

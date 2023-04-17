@@ -26,7 +26,7 @@
 %%% EXTERNAL EXPORTS
 %%%-----------------------------------------------------------------------------
 format() ->
-    triq_dom:oneof([iso8601]).
+    triq_dom:oneof([iso8601, rfc2109]).
 
 opts(iso8601) ->
     ?LET(

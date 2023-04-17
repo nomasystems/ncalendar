@@ -200,5 +200,7 @@ to_timestamp(Format, Value) ->
 %%%-----------------------------------------------------------------------------
 mod(iso8601) ->
     ncalendar_iso8601;
+mod(rfc2109) ->
+    ncalendar_rfc2109;
 mod(Format) ->
     erlang:throw({error, ncalendar, {unsupported_format, Format}}).

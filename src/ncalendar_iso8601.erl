@@ -141,9 +141,9 @@ is_valid(
     try
         Timezone = erlang:list_to_integer(resolve_timezone_alias(TZ)),
         true = ncalendar_util:is_valid_timezone(Timezone),
-        Date = to_date([Y1, Y2, Y3, Y4], [Mo1, Mo2], [D1, D2]),
+        Date = ncalendar_util:to_date([Y1, Y2, Y3, Y4], [Mo1, Mo2], [D1, D2]),
         true = ncalendar_util:is_valid_date(Date),
-        Time = to_time([H1, H2], [Mi1, Mi2], [S1, S2]),
+        Time = ncalendar_util:to_time([H1, H2], [Mi1, Mi2], [S1, S2]),
         true = ncalendar_util:is_valid_time(Time)
     catch
         _Class:_Term ->
@@ -182,9 +182,9 @@ is_valid(
     try
         Timezone = erlang:list_to_integer(resolve_timezone_alias(TZ)),
         true = ncalendar_util:is_valid_timezone(Timezone),
-        Date = to_date([Y1, Y2, Y3, Y4], [Mo1, Mo2], [D1, D2]),
+        Date = ncalendar_util:to_date([Y1, Y2, Y3, Y4], [Mo1, Mo2], [D1, D2]),
         true = ncalendar_util:is_valid_date(Date),
-        Time = to_time([H1, H2], [Mi1, Mi2], [S1, S2]),
+        Time = ncalendar_util:to_time([H1, H2], [Mi1, Mi2], [S1, S2]),
         true = ncalendar_util:is_valid_time(Time)
     catch
         _Class:_Term ->
@@ -224,9 +224,9 @@ is_valid(
     try
         Timezone = erlang:list_to_integer(resolve_timezone_alias(TZ)),
         true = ncalendar_util:is_valid_timezone(Timezone),
-        Date = to_date([Y1, Y2, Y3, Y4], [Mo1, Mo2], [D1, D2]),
+        Date = ncalendar_util:to_date([Y1, Y2, Y3, Y4], [Mo1, Mo2], [D1, D2]),
         true = ncalendar_util:is_valid_date(Date),
-        Time = to_time([H1, H2], [Mi1, Mi2], [S1, S2]),
+        Time = ncalendar_util:to_time([H1, H2], [Mi1, Mi2], [S1, S2]),
         true = ncalendar_util:is_valid_time(Time)
     catch
         _Class:_Term ->
@@ -245,9 +245,9 @@ is_valid([Y1, Y2, Y3, Y4, Mo1, Mo2, D1, D2, $T, H1, H2, Mi1, Mi2, S1, S2 | TZ], 
     try
         Timezone = erlang:list_to_integer(resolve_timezone_alias(TZ)),
         true = ncalendar_util:is_valid_timezone(Timezone),
-        Date = to_date([Y1, Y2, Y3, Y4], [Mo1, Mo2], [D1, D2]),
+        Date = ncalendar_util:to_date([Y1, Y2, Y3, Y4], [Mo1, Mo2], [D1, D2]),
         true = ncalendar_util:is_valid_date(Date),
-        Time = to_time([H1, H2], [Mi1, Mi2], [S1, S2]),
+        Time = ncalendar_util:to_time([H1, H2], [Mi1, Mi2], [S1, S2]),
         true = ncalendar_util:is_valid_time(Time)
     catch
         _Class:_Term ->
@@ -288,8 +288,8 @@ to_datetimezone(
     ]
 ) ->
     Timezone = erlang:list_to_integer(resolve_timezone_alias(TZ)),
-    RawDate = to_date([Y1, Y2, Y3, Y4], [Mo1, Mo2], [D1, D2]),
-    RawTime = to_time([H1, H2], [Mi1, Mi2], [S1, S2]),
+    RawDate = ncalendar_util:to_date([Y1, Y2, Y3, Y4], [Mo1, Mo2], [D1, D2]),
+    RawTime = ncalendar_util:to_time([H1, H2], [Mi1, Mi2], [S1, S2]),
     Millisec = erlang:list_to_integer([Ml1, Ml2, Ml3]),
     ncalendar_util:datetime_to_datetimezone({RawDate, RawTime}, {millisecond, Millisec}, Timezone);
 %% Extended
@@ -299,8 +299,8 @@ to_datetimezone(
     ]
 ) ->
     Timezone = erlang:list_to_integer(resolve_timezone_alias(TZ)),
-    RawDate = to_date([Y1, Y2, Y3, Y4], [Mo1, Mo2], [D1, D2]),
-    RawTime = to_time([H1, H2], [Mi1, Mi2], [S1, S2]),
+    RawDate = ncalendar_util:to_date([Y1, Y2, Y3, Y4], [Mo1, Mo2], [D1, D2]),
+    RawTime = ncalendar_util:to_time([H1, H2], [Mi1, Mi2], [S1, S2]),
     ncalendar_util:datetime_to_datetimezone({RawDate, RawTime}, {millisecond, 0}, Timezone);
 %% Milliseconds
 to_datetimezone(
@@ -309,15 +309,15 @@ to_datetimezone(
     ]
 ) ->
     Timezone = erlang:list_to_integer(resolve_timezone_alias(TZ)),
-    RawDate = to_date([Y1, Y2, Y3, Y4], [Mo1, Mo2], [D1, D2]),
-    RawTime = to_time([H1, H2], [Mi1, Mi2], [S1, S2]),
+    RawDate = ncalendar_util:to_date([Y1, Y2, Y3, Y4], [Mo1, Mo2], [D1, D2]),
+    RawTime = ncalendar_util:to_time([H1, H2], [Mi1, Mi2], [S1, S2]),
     Millisec = erlang:list_to_integer([Ml1, Ml2, Ml3]),
     ncalendar_util:datetime_to_datetimezone({RawDate, RawTime}, {millisecond, Millisec}, Timezone);
 %% Default
 to_datetimezone([Y1, Y2, Y3, Y4, Mo1, Mo2, D1, D2, $T, H1, H2, Mi1, Mi2, S1, S2 | TZ]) ->
     Timezone = erlang:list_to_integer(resolve_timezone_alias(TZ)),
-    RawDate = to_date([Y1, Y2, Y3, Y4], [Mo1, Mo2], [D1, D2]),
-    RawTime = to_time([H1, H2], [Mi1, Mi2], [S1, S2]),
+    RawDate = ncalendar_util:to_date([Y1, Y2, Y3, Y4], [Mo1, Mo2], [D1, D2]),
+    RawTime = ncalendar_util:to_time([H1, H2], [Mi1, Mi2], [S1, S2]),
     ncalendar_util:datetime_to_datetimezone({RawDate, RawTime}, {millisecond, 0}, Timezone);
 to_datetimezone(Value) ->
     erlang:throw({error, ncalendar_iso8601, {unrecognized_value, Value}}).
@@ -356,15 +356,3 @@ timezone(Timezone) ->
         _False ->
             erlang:throw({error, ncalendar, {unsupported_timezone, Timezone}})
     end.
-
-to_date(YearList, MonthList, DayList) ->
-    Year = erlang:list_to_integer(YearList),
-    Month = erlang:list_to_integer(MonthList),
-    Day = erlang:list_to_integer(DayList),
-    {Year, Month, Day}.
-
-to_time(HourList, MinList, SecList) ->
-    Hour = erlang:list_to_integer(HourList),
-    Min = erlang:list_to_integer(MinList),
-    Sec = erlang:list_to_integer(SecList),
-    {Hour, Min, Sec}.
