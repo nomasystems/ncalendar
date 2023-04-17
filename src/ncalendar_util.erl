@@ -27,7 +27,9 @@
     is_valid_timezone/1,
     milliseconds_to_datetimezone/2,
     pad/2,
-    timestamp_to_milliseconds/1
+    timestamp_to_milliseconds/1,
+    to_date/3,
+    to_time/3
 ]).
 
 %%% MACROS
@@ -134,6 +136,18 @@ timestamp_to_milliseconds({MSecs, Secs, MicroSecs}) ->
     MilliSecs = MicroSecs div 1000,
     GregorianSeconds = MSecs * 1000000 + Secs + ?JANUARY_1ST_1970,
     GregorianSeconds * 1000 + MilliSecs.
+
+to_date(YearList, MonthList, DayList) ->
+    Year = erlang:list_to_integer(YearList),
+    Month = erlang:list_to_integer(MonthList),
+    Day = erlang:list_to_integer(DayList),
+    {Year, Month, Day}.
+
+to_time(HourList, MinList, SecList) ->
+    Hour = erlang:list_to_integer(HourList),
+    Min = erlang:list_to_integer(MinList),
+    Sec = erlang:list_to_integer(SecList),
+    {Hour, Min, Sec}.
 
 %%%-----------------------------------------------------------------------------
 %%% INTERNAL FUNCTIONS

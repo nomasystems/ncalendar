@@ -28,8 +28,10 @@ all() ->
     [
         {group, properties},
         convert,
+        convert_without_tz,
         datetime,
         gregorian_seconds,
+        now,
         timestamp
     ].
 
@@ -79,26 +81,63 @@ there_and_back_again(Conf) ->
     ).
 
 convert(_Conf) ->
-    ISO8601 = <<"20140519T100000Z">>,
-    ISO8601Ms = <<"20140519T100000.000Z">>,
-    ISO8601Ext = <<"2014-05-19T10:00:00Z">>,
-    ISO8601ExtMs = <<"2014-05-19T10:00:00.000Z">>,
+    ISO8601 = <<"20140519T100000+0100">>,
+    ISO8601Ms = <<"20140519T100000.000+0100">>,
+    ISO8601Ext = <<"2014-05-19T10:00:00+0100">>,
+    ISO8601ExtMs = <<"2014-05-19T10:00:00.000+0100">>,
+    RFC2109 = <<"Mon, 19-May-2014 09:00:00 GMT">>,
 
     ISO8601Ms = ncalendar:convert(iso8601, iso8601, ISO8601, ?OPTS_MS),
     ISO8601Ext = ncalendar:convert(iso8601, iso8601, ISO8601, ?OPTS_EXT),
     ISO8601ExtMs = ncalendar:convert(iso8601, iso8601, ISO8601, ?OPTS_EXT_MS),
+    RFC2109 = ncalendar:convert(iso8601, rfc2109, ISO8601),
 
     ISO8601 = ncalendar:convert(iso8601, iso8601, ISO8601Ms),
     ISO8601Ext = ncalendar:convert(iso8601, iso8601, ISO8601Ms, ?OPTS_EXT),
     ISO8601ExtMs = ncalendar:convert(iso8601, iso8601, ISO8601Ms, ?OPTS_EXT_MS),
+    RFC2109 = ncalendar:convert(iso8601, rfc2109, ISO8601Ms),
 
     ISO8601 = ncalendar:convert(iso8601, iso8601, ISO8601Ext),
     ISO8601Ms = ncalendar:convert(iso8601, iso8601, ISO8601Ext, ?OPTS_MS),
     ISO8601ExtMs = ncalendar:convert(iso8601, iso8601, ISO8601Ext, ?OPTS_EXT_MS),
+    RFC2109 = ncalendar:convert(iso8601, rfc2109, ISO8601Ext),
 
     ISO8601 = ncalendar:convert(iso8601, iso8601, ISO8601ExtMs),
     ISO8601Ms = ncalendar:convert(iso8601, iso8601, ISO8601ExtMs, ?OPTS_MS),
-    ISO8601Ext = ncalendar:convert(iso8601, iso8601, ISO8601ExtMs, ?OPTS_EXT).
+    ISO8601Ext = ncalendar:convert(iso8601, iso8601, ISO8601ExtMs, ?OPTS_EXT),
+    RFC2109 = ncalendar:convert(iso8601, rfc2109, ISO8601ExtMs).
+
+convert_without_tz(_Conf) ->
+    ISO8601 = <<"20140519T100000Z">>,
+    ISO8601Ms = <<"20140519T100000.000Z">>,
+    ISO8601Ext = <<"2014-05-19T10:00:00Z">>,
+    ISO8601ExtMs = <<"2014-05-19T10:00:00.000Z">>,
+    RFC2109 = <<"Mon, 19-May-2014 10:00:00 GMT">>,
+
+    ISO8601Ms = ncalendar:convert(iso8601, iso8601, ISO8601, ?OPTS_MS),
+    ISO8601Ext = ncalendar:convert(iso8601, iso8601, ISO8601, ?OPTS_EXT),
+    ISO8601ExtMs = ncalendar:convert(iso8601, iso8601, ISO8601, ?OPTS_EXT_MS),
+    RFC2109 = ncalendar:convert(iso8601, rfc2109, ISO8601),
+
+    ISO8601 = ncalendar:convert(iso8601, iso8601, ISO8601Ms),
+    ISO8601Ext = ncalendar:convert(iso8601, iso8601, ISO8601Ms, ?OPTS_EXT),
+    ISO8601ExtMs = ncalendar:convert(iso8601, iso8601, ISO8601Ms, ?OPTS_EXT_MS),
+    RFC2109 = ncalendar:convert(iso8601, rfc2109, ISO8601Ms),
+
+    ISO8601 = ncalendar:convert(iso8601, iso8601, ISO8601Ext),
+    ISO8601Ms = ncalendar:convert(iso8601, iso8601, ISO8601Ext, ?OPTS_MS),
+    ISO8601ExtMs = ncalendar:convert(iso8601, iso8601, ISO8601Ext, ?OPTS_EXT_MS),
+    RFC2109 = ncalendar:convert(iso8601, rfc2109, ISO8601Ext),
+
+    ISO8601 = ncalendar:convert(iso8601, iso8601, ISO8601ExtMs),
+    ISO8601Ms = ncalendar:convert(iso8601, iso8601, ISO8601ExtMs, ?OPTS_MS),
+    ISO8601Ext = ncalendar:convert(iso8601, iso8601, ISO8601ExtMs, ?OPTS_EXT),
+    RFC2109 = ncalendar:convert(iso8601, rfc2109, ISO8601ExtMs),
+
+    ISO8601 = ncalendar:convert(rfc2109, iso8601, RFC2109),
+    ISO8601Ms = ncalendar:convert(rfc2109, iso8601, RFC2109, ?OPTS_MS),
+    ISO8601Ext = ncalendar:convert(rfc2109, iso8601, RFC2109, ?OPTS_EXT),
+    ISO8601ExtMs = ncalendar:convert(rfc2109, iso8601, RFC2109, ?OPTS_EXT_MS).
 
 datetime(_Conf) ->
     Datetime = calendar:universal_time(),
@@ -110,6 +149,13 @@ gregorian_seconds(_Conf) ->
     GregorianSeconds = calendar:datetime_to_gregorian_seconds(Datetime),
     Bin = ncalendar:from_gregorian_seconds(iso8601, GregorianSeconds),
     GregorianSeconds = ncalendar:to_gregorian_seconds(iso8601, Bin).
+
+now(_Conf) ->
+    DateTime = calendar:now_to_datetime(erlang:timestamp()),
+    Iso8601 = ncalendar:now(iso8601),
+    CalendarSeconds = calendar:datetime_to_gregorian_seconds(DateTime),
+    Iso8601Seconds = ncalendar:to_gregorian_seconds(iso8601, Iso8601),
+    1 >= Iso8601Seconds - CalendarSeconds.
 
 timestamp(_Conf) ->
     Timestamp = erlang:timestamp(),
