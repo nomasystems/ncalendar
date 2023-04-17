@@ -11,7 +11,7 @@ Add `ncalendar` to your project dependencies.
 ```erl
 %%% e.g., rebar.config
 {deps, [
-    {ncalendar, {git, "git@github.com:nomasystems/ncalendar.git", {tag, "0.1.0"}}}
+    {ncalendar, {git, "git@github.com:nomasystems/ncalendar.git", {tag, "0.2.0"}}}
 ]}.
 ```
 
@@ -44,7 +44,7 @@ Add `ncalendar` to your project dependencies.
     | ------------ | --------  |
     | precision | `millisecond` |
     | extended | boolean() |
-
+- `rfc2109`
 
 ## Support
 
