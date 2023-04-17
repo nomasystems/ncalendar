@@ -21,17 +21,24 @@
 
 prop_there_and_back_again() ->
     ?FORALL(
-        {Format, Opts},
+        {Format, Opts, Tz},
         ?LET(
-            Format,
-            ncalendar_dom:format(),
+            {
+                Format, 
+                Tz
+            },
+            {
+                ncalendar_dom:format(),
+                ncalendar_dom:timezone()
+            },
             {
                 Format,
-                ncalendar_dom:opts(Format)
+                ncalendar_dom:opts(Format),
+                Tz
             }
         ),
         begin
-            Now = ncalendar:now(Format, +1100, Opts),
+            Now = ncalendar:now(Format, Tz, Opts),
             true = ncalendar:is_valid(Format, Now, Opts),
             Now = ncalendar:convert(Format, Format, Now, Opts),
             true

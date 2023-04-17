@@ -15,11 +15,13 @@
 
 %%% INCLUDE FILES
 -include_lib("triq/include/triq.hrl").
+-include_lib("ncalendar/src/ncalendar.hrl").
 
 %%% EXTERNAL EXPORTS
 -export([
     format/0,
-    opts/1
+    opts/1,
+    timezone/0
 ]).
 
 %%%-----------------------------------------------------------------------------
@@ -45,3 +47,6 @@ opts(iso8601) ->
     );
 opts(_Format) ->
     triq_dom:return(#{}).
+
+timezone() ->
+    triq_dom:elements(?TIMEZONES).
