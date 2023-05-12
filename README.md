@@ -45,7 +45,7 @@ Add `ncalendar` to your project dependencies.
     | precision | `millisecond` |
     | extended | boolean() |
 - `rfc2109`
-- `IMF-fixdate`
+- `imf_fixdate`
 
 ## Support
 
