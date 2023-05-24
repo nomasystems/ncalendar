@@ -31,6 +31,7 @@
     now/1,
     now/2,
     now/3,
+    timezone/2,
     to_datetime/2,
     to_gregorian_seconds/2,
     to_timestamp/2
@@ -167,6 +168,15 @@ now(Format, Timezone, Opts) ->
     ),
     Mod = mod(Format),
     Mod:from_datetimezone(Datetimezone, Opts).
+
+-spec timezone(Format, Value) -> Result when
+    Format :: format(),
+    Value :: value(),
+    Result :: timezone().
+timezone(Format, Value) ->
+    Mod = mod(Format),
+    {_Date, _Time, Timezone} = Mod:to_datetimezone(Value),
+    Timezone.
 
 -spec to_datetime(Format, Value) -> Result when
     Format :: format(),
