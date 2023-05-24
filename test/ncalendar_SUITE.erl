@@ -32,7 +32,8 @@ all() ->
         datetime,
         gregorian_seconds,
         now,
-        timestamp
+        timestamp,
+        timezone
     ].
 
 groups() ->
@@ -179,3 +180,18 @@ timestamp(_Conf) ->
     Bin = ncalendar:from_timestamp(iso8601, Timestamp),
     {MSecs, Secs, _MicroSecs1} = Timestamp,
     {MSecs, Secs, 0} = ncalendar:to_timestamp(iso8601, Bin).
+
+timezone(_Conf) ->
+    ISO8601 = <<"20140519T100000Z">>,
+    ISO8601Ms = <<"20140519T100000.000+0010">>,
+    ISO8601Ext = <<"2014-05-19T10:00:00-0007">>,
+    ISO8601ExtMs = <<"2014-05-19T10:00:00.000Z">>,
+    RFC2109 = <<"Mon, 19-May-2014 10:00:00 GMT">>,
+    IMFFixdate = <<"Mon, 19 May 2014 10:00:00 GMT">>,
+
+    0000 = ncalendar:timezone(iso8601, ISO8601),
+    0010 = ncalendar:timezone(iso8601, ISO8601Ms),
+    -0007 = ncalendar:timezone(iso8601, ISO8601Ext),
+    0000 = ncalendar:timezone(iso8601, ISO8601ExtMs),
+    0000 = ncalendar:timezone(rfc2109, RFC2109),
+    0000 = ncalendar:timezone(imf_fixdate, IMFFixdate).
