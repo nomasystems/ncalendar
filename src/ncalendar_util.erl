@@ -29,7 +29,8 @@
     pad/2,
     timestamp_to_milliseconds/1,
     to_date/3,
-    to_time/3
+    to_time/3,
+    to_timezone/1
 ]).
 
 %%% MACROS
@@ -137,17 +138,35 @@ timestamp_to_milliseconds({MSecs, Secs, MicroSecs}) ->
     GregorianSeconds = MSecs * 1000000 + Secs + ?JANUARY_1ST_1970,
     GregorianSeconds * 1000 + MilliSecs.
 
+-spec to_date(YearList, MonthList, DayList) -> Result when
+    YearList :: list(),
+    MonthList :: list(),
+    DayList :: list(),
+    Result :: date().
 to_date(YearList, MonthList, DayList) ->
     Year = erlang:list_to_integer(YearList),
     Month = erlang:list_to_integer(MonthList),
     Day = erlang:list_to_integer(DayList),
     {Year, Month, Day}.
 
+-spec to_time(HourList, MinList, SecList) -> Result when
+    HourList :: list(),
+    MinList :: list(),
+    SecList :: list(),
+    Result :: time().
 to_time(HourList, MinList, SecList) ->
     Hour = erlang:list_to_integer(HourList),
     Min = erlang:list_to_integer(MinList),
     Sec = erlang:list_to_integer(SecList),
     {Hour, Min, Sec}.
+
+-spec to_timezone(TimezoneList) -> Result when
+    TimezoneList :: list(),
+    Result :: timezone().
+to_timezone([]) ->
+    undefined;
+to_timezone(TimezoneList) ->
+    erlang:list_to_integer(TimezoneList).
 
 %%%-----------------------------------------------------------------------------
 %%% INTERNAL FUNCTIONS
@@ -155,6 +174,8 @@ to_time(HourList, MinList, SecList) ->
 -spec timezone_diff(Timezone) -> Result when
     Timezone :: timezone(),
     Result :: integer().
+timezone_diff(undefined) ->
+    0;
 timezone_diff(Timezone) ->
     Min = erlang:abs(Timezone rem 100),
     Hour = Timezone div 100,

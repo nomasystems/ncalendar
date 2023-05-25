@@ -27,7 +27,8 @@
 -type time() :: calendar:time().
 -type timestamp() :: erlang:timestamp().
 -type timezone() ::
-    -1200
+    undefined
+    | -1200
     | -1100
     | -1000
     | -0930
@@ -75,6 +76,7 @@
 
 %%% MACROS
 -define(TIMEZONES, [
+    undefined,
     -1200,
     -1100,
     -1000,
