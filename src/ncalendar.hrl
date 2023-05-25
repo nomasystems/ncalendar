@@ -77,7 +77,6 @@
 
 %%% MACROS
 -define(TIMEZONES, [
-    undefined,
     -1200,
     -1100,
     -1000,

@@ -40,6 +40,11 @@
     to_timestamp/2
 ]).
 
+%%% UTIL EXPORTS
+-export([
+    timezones/0
+]).
+
 %%% TYPES
 -export_type([
     datetime/0,
@@ -231,6 +236,14 @@ to_timestamp(Format, Value) ->
     Mod = mod(Format),
     Datetimezone = Mod:to_datetimezone(Value),
     ncalendar_util:datetimezone_to_timestamp(Datetimezone).
+
+%%%-----------------------------------------------------------------------------
+%%% UTIL EXPORTS
+%%%-----------------------------------------------------------------------------
+-spec timezones() -> Result when
+    Result :: [timezone()].
+timezones() ->
+    ?TIMEZONES.
 
 %%%-----------------------------------------------------------------------------
 %%% INTERNAL FUNCTIONS
