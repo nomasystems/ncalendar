@@ -33,7 +33,8 @@ all() ->
         gregorian_seconds,
         now,
         timestamp,
-        timezone
+        timezone,
+        posix_time
     ].
 
 groups() ->
@@ -195,3 +196,8 @@ timezone(_Conf) ->
     0000 = ncalendar:timezone(iso8601, ISO8601ExtMs),
     0000 = ncalendar:timezone(rfc2109, RFC2109),
     0000 = ncalendar:timezone(imf_fixdate, IMFFixdate).
+
+posix_time(_Conf) ->
+    UnixTime = os:system_time(second),
+    Bin = ncalendar:from_posix_time(iso8601, UnixTime),
+    UnixTime = ncalendar:to_posix_time(iso8601, Bin).

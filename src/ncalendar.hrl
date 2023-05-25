@@ -72,6 +72,7 @@
     | +1400.
 %% <<"Z">>
 -type timezone_alias() :: binary().
+-type posix_time() :: non_neg_integer().
 -type value() :: binary().
 
 %%% MACROS

@@ -24,6 +24,8 @@
     from_datetime/3,
     from_gregorian_seconds/2,
     from_gregorian_seconds/3,
+    from_posix_time/2,
+    from_posix_time/3,
     from_timestamp/2,
     from_timestamp/3,
     is_valid/2,
@@ -34,6 +36,7 @@
     timezone/2,
     to_datetime/2,
     to_gregorian_seconds/2,
+    to_posix_time/2,
     to_timestamp/2
 ]).
 
@@ -50,7 +53,7 @@
 ]).
 
 %%% MACROS
--define(JANUARY_1ST_1970_MS, 62167219200000).
+-define(EPOCH_DELTA, 62167219200).
 
 %%%-----------------------------------------------------------------------------
 %%% EXTERNAL EXPORTS
@@ -109,6 +112,22 @@ from_gregorian_seconds(Format, GregorianSeconds, Opts) ->
     Mod = mod(Format),
     Mod:from_datetimezone(Datetimezone, Opts).
 
+-spec from_posix_time(Format, UnixTime) -> Result when
+    Format :: format(),
+    UnixTime :: posix_time(),
+    Result :: value().
+from_posix_time(Format, UnixTime) ->
+    from_posix_time(Format, UnixTime, #{}).
+
+-spec from_posix_time(Format, UnixTime, Opts) -> Result when
+    Format :: format(),
+    UnixTime :: posix_time(),
+    Opts :: opts(),
+    Result :: value().
+from_posix_time(Format, UnixTime, Opts) ->
+    GregorianSeconds = UnixTime + ?EPOCH_DELTA,
+    from_gregorian_seconds(Format, GregorianSeconds, Opts).
+
 -spec from_timestamp(Format, Timestamp) -> Result when
     Format :: format(),
     Timestamp :: timestamp(),
@@ -163,7 +182,7 @@ now(Format, Timezone) ->
     Result :: value().
 now(Format, Timezone, Opts) ->
     Datetimezone = ncalendar_util:milliseconds_to_datetimezone(
-        erlang:system_time(millisecond) + ?JANUARY_1ST_1970_MS,
+        erlang:system_time(millisecond) + (?EPOCH_DELTA * 1000),
         Timezone
     ),
     Mod = mod(Format),
@@ -195,6 +214,14 @@ to_gregorian_seconds(Format, Value) ->
     Mod = mod(Format),
     Datetimezone = Mod:to_datetimezone(Value),
     ncalendar_util:datetimezone_to_gregorian_seconds(Datetimezone).
+
+-spec to_posix_time(Format, Value) -> Result when
+    Format :: format(),
+    Value :: value(),
+    Result :: posix_time().
+to_posix_time(Format, Value) ->
+    GregorianSeconds = to_gregorian_seconds(Format, Value),
+    GregorianSeconds - ?EPOCH_DELTA.
 
 -spec to_timestamp(Format, Value) -> Result when
     Format :: format(),
