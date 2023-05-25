@@ -27,6 +27,8 @@ Add `ncalendar` to your project dependencies.
 | `ncalendar:from_datetime/3` | Generates a binary representation of the given `calendar:datetime()` value in the given format and format opts|
 | `ncalendar:from_gregorian_seconds/2` | Generates a binary representation of the given number of gregorian seconds in the given format |
 | `ncalendar:from_gregorian_seconds/3` | Generates a binary representation of the given number of gregorian seconds in the given format and format opts |
+| `ncalendar:from_posix_time/2` | Generates a binary representation of the given number of seconds since Epoch in the given format |
+| `ncalendar:from_posix_time/3` | Generates a binary representation of the given number of seconds since Epoch in the given format and format opts |
 | `ncalendar:from_timestamp/2` | Generates a binary representation of the given `erlang:timestamp()` value in the given format |
 | `ncalendar:from_timestamp/3` | Generates a binary representation of the given `erlang:timestamp()` value in the given format and format opts |
 | `ncalendar:is_valid/2` | Checks the validity of a binary representation of a datetime with respect to the specified format |
@@ -38,7 +40,8 @@ Add `ncalendar` to your project dependencies.
 | `ncalendar:timezone/3` | Returns the timezone of the given binary representation, format and format opts |
 | `ncalendar:to_datetime/2` | Converts a binary representation of a datetime in the given format to a `calendar:datetime()` value |
 | `ncalendar:to_gregorian_seconds/2` | Converts a binary representation of a datetime in the given format to the integer value of gregorian seconds |
-| `ncalendar:to_timestamp/2` | Converts a binary representation of a datetime in the given format to a `erlang:timestamp()` value |
+| `ncalendar:to_posix_time/2` | Converts a binary representation of a datetime in the given format to a POSIX time value (seconds since Epoch) |
+| `ncalendar:to_timestamp/2` | Converts a binary representation of a datetime in the given format to an `erlang:timestamp()` value |
 
 ## Supported formats
 
