@@ -40,7 +40,13 @@ prop_there_and_back_again() ->
         begin
             Now = ncalendar:now(Format, Tz, Opts),
             true = ncalendar:is_valid(Format, Now, Opts),
-            Now = ncalendar:convert(Format, Format, Now, Opts),
+            Now = 
+                case Tz of
+                    undefined ->
+                        ncalendar:convert(Format, Format, Now, Opts);
+                    _Otherwise ->
+                        ncalendar:shift_timezone(Format, ncalendar:convert(Format, Format, Now, Opts), Tz, Opts)
+                end,
             true
         end
     ).

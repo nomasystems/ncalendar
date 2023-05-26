@@ -351,10 +351,17 @@ format_timezone(Timezone) ->
         true ->
             do_format_timezone(Timezone);
         _False ->
-            erlang:throw({error, ncalendar, {unsupported_timezone, Timezone}})
+            erlang:throw({error, ncalendar_iso8601, {unsupported_timezone, Timezone}})
     end.
 
 resolve_timezone_alias("Z") ->
     "+0000";
+resolve_timezone_alias([]) ->
+    [];
 resolve_timezone_alias(TZ) ->
-    TZ.
+    case ncalendar_util:is_valid_timezone(erlang:list_to_integer(TZ)) of
+        true ->
+            TZ;
+        false ->
+            erlang:throw({error, ncalendar_iso8601, {unrecognized_timezone, TZ}})
+    end.

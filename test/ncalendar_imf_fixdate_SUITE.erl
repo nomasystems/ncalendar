@@ -55,7 +55,7 @@ from_datetimezone(_Conf) ->
     <<"Mon, 19 May 2014 12:00:00 GMT">> = ncalendar_imf_fixdate:from_datetimezone(
         ?DATETIMEZONE_2, Opts
     ),
-    <<"Sat, 31 May 2014 21:00:00 GMT">> = ncalendar_imf_fixdate:from_datetimezone(
+    <<"Sun, 01 Jun 2014 08:00:00 +1100">> = ncalendar_imf_fixdate:from_datetimezone(
         ?DATETIMEZONE_3, Opts
     ).
 

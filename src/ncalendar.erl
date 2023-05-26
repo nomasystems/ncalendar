@@ -42,7 +42,9 @@
 
 %%% UTIL EXPORTS
 -export([
-    timezones/0
+    timezones/0,
+    shift_timezone/3,
+    shift_timezone/4
 ]).
 
 %%% TYPES
@@ -245,13 +247,37 @@ to_timestamp(Format, Value) ->
 timezones() ->
     ?TIMEZONES.
 
+-spec shift_timezone(Format, Value, Timezone) -> Result when
+    Format :: format(),
+    Value :: value(),
+    Timezone :: timezone(),
+    Result :: value().
+shift_timezone(Format, Value, Timezone) ->
+    shift_timezone(Format, Value, Timezone, #{}).
+
+-spec shift_timezone(Format, Value, Timezone, Opts) -> Result when
+    Format :: format(),
+    Value :: value(),
+    Timezone :: timezone(),
+    Opts :: opts(),
+    Result :: value().
+shift_timezone(Format, Value, Timezone, Opts) ->
+    case timezone(Format, Value) of
+        undefined ->
+            erlang:throw({error, ncalendar, {no_shift_allowed_without_timezone, Value}});
+        _Otherwise ->
+            Mod = mod(Format),
+            {Datetime, Subseconds, _Timezone} = Mod:to_datetimezone(Value),
+            Mod:from_datetimezone({Datetime, Subseconds, Timezone}, Opts)
+    end.
+
 %%%-----------------------------------------------------------------------------
 %%% INTERNAL FUNCTIONS
 %%%-----------------------------------------------------------------------------
 mod(iso8601) ->
     ncalendar_iso8601;
-mod(rfc2109) ->
-    ncalendar_rfc2109;
+mod(http_date) ->
+    ncalendar_http_date;
 mod(imf_fixdate) ->
     ncalendar_imf_fixdate;
 mod(Format) ->

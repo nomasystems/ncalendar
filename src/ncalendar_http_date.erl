@@ -11,7 +11,7 @@
 %% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %% See the License for the specific language governing permissions and
 %% limitations under the License
--module(ncalendar_rfc2109).
+-module(ncalendar_http_date).
 
 %%% BEHAVIOURS
 -behaviour(ncalendar_format).
@@ -151,15 +151,15 @@ to_datetimezone(
         | TZ
     ]
 ) ->
-    ?GMT_TIMEZONE = resolve_timezone_alias(TZ),
+    Timezone = ncalendar_util:to_timezone(resolve_timezone_alias(TZ)),
     [Mo1, Mo2] = ncalendar_util:pad(2, from_month([FM1, FM2, FM3])),
     RawDate = ncalendar_util:to_date([Y1, Y2, Y3, Y4], [Mo1, Mo2], [D1, D2]),
     RawTime = ncalendar_util:to_time([H1, H2], [Mi1, Mi2], [S1, S2]),
     ncalendar_util:datetime_to_datetimezone(
-        {RawDate, RawTime}, {millisecond, 0}, list_to_integer(?GMT_TIMEZONE)
+        {RawDate, RawTime}, {millisecond, 0}, Timezone
     );
 to_datetimezone(Value) ->
-    erlang:throw({error, ncalendar_rfc2109, {unrecognized_value, Value}}).
+    erlang:throw({error, ncalendar_http_date, {unrecognized_value, Value}}).
 
 %%%-----------------------------------------------------------------------------
 %%% INTERNAL FUNCTIONS
@@ -232,4 +232,4 @@ from_month(?DECEMBER) ->
 resolve_timezone_alias("GMT") ->
     ?GMT_TIMEZONE;
 resolve_timezone_alias(TZ) ->
-    TZ.
+    erlang:throw({error, ncalendar_http_date, {unrecognized_timezone, TZ}}).

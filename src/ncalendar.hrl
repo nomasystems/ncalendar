@@ -17,7 +17,7 @@
 %%% TYPES
 -type date() :: calendar:date().
 -type datetime() :: calendar:datetime().
-% Datetime is a UTC time.
+% Datetime is: UTC time | local time (if no timezone is specified).
 -type datetimezone() :: {datetime(), sub_seconds(), timezone() | timezone_alias()}.
 -type format() :: iso8601.
 -type gregorian_seconds() :: non_neg_integer().
