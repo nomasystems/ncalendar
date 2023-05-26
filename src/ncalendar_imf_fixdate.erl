@@ -11,12 +11,14 @@
 %% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %% See the License for the specific language governing permissions and
 %% limitations under the License
+%
+%% @doc <code>ncalendar</code>'s <code>imf-fixdate</code> format module.
 -module(ncalendar_imf_fixdate).
 
 %%% BEHAVIOURS
 -behaviour(ncalendar_format).
 
-%%% EXTERNAL EXPORTS
+%%% FORMAT EXPORTS
 -export([
     from_datetimezone/2,
     is_valid/2,
@@ -38,8 +40,10 @@
 -define(DECEMBER, "Dec").
 
 %%%-----------------------------------------------------------------------------
-%%% EXTERNAL EXPORTS
+%%% FORMAT EXPORTS
 %%%-----------------------------------------------------------------------------
+%% @private
+%% @doc Converts a <code>datetimezone()</code> value to an <code>imf-fixdate</code> binary.
 from_datetimezone({Datetime, Subseconds, <<"GMT">>}, Opts) ->
     from_datetimezone({Datetime, Subseconds, +0000}, Opts);
 from_datetimezone({_Datetime, _Subseconds, Timezone} = Datetimezone, _Opts) ->
@@ -64,6 +68,8 @@ from_datetimezone({_Datetime, _Subseconds, Timezone} = Datetimezone, _Opts) ->
         format_timezone(Timezone)
     ]).
 
+%% @private
+%% @doc Checks if a value is a valid <code>imf-fixdate</code> datetime.
 is_valid(Value, Opts) when is_binary(Value) ->
     is_valid(erlang:binary_to_list(Value), Opts);
 is_valid(
@@ -118,6 +124,8 @@ is_valid(
 is_valid(_Value, _Opts) ->
     false.
 
+%% @private
+%% @doc Converts an <code>imf-fixdate</code> binary to a <code>datetimezone()</code> value.
 to_datetimezone(Value) when is_binary(Value) ->
     to_datetimezone(erlang:binary_to_list(Value));
 to_datetimezone(

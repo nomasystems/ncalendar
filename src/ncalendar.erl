@@ -48,12 +48,61 @@
 ]).
 
 %%% TYPES
+-type format() :: iso8601 | http_date | imf_fixdate.
+-type gregorian_seconds() :: non_neg_integer().
+-type opts() :: map().
+-type timezone() ::
+    undefined
+    | -1200
+    | -1100
+    | -1000
+    | -0930
+    | -0900
+    | -0800
+    | -0700
+    | -0600
+    | -0500
+    | -0430
+    | -0400
+    | -0330
+    | -0300
+    | -0230
+    | -0200
+    | -0100
+    | +0000
+    | +0100
+    | +0200
+    | +0300
+    | +0330
+    | +0400
+    | +0430
+    | +0500
+    | +0530
+    | +0545
+    | +0600
+    | +0630
+    | +0700
+    | +0730
+    | +0800
+    | +0900
+    | +0930
+    | +1000
+    | +1030
+    | +1100
+    | +1130
+    | +1200
+    | +1245
+    | +1300
+    | +1345
+    | +1400.
+-type timezone_alias() :: binary().
+-type posix_time() :: non_neg_integer().
+-type value() :: binary().
+
+%%% EXPORT TYPES
 -export_type([
-    datetime/0,
     format/0,
-    gregorian_seconds/0,
     opts/0,
-    timestamp/0,
     timezone/0,
     timezone_alias/0,
     value/0
@@ -70,6 +119,7 @@
     To :: format(),
     Value :: value(),
     Result :: value().
+%% @equiv convert(From, To, Value, #{})
 convert(From, To, Value) ->
     convert(From, To, Value, #{}).
 
@@ -79,6 +129,7 @@ convert(From, To, Value) ->
     Value :: value(),
     Opts :: opts(),
     Result :: value().
+%% @doc Converts a binary representation of a datetime from one format to another.
 convert(From, To, Value, Opts) ->
     ModFrom = mod(From),
     ModTo = mod(To),
@@ -86,16 +137,18 @@ convert(From, To, Value, Opts) ->
 
 -spec from_datetime(Format, Datetime) -> Result when
     Format :: format(),
-    Datetime :: datetime(),
+    Datetime :: calendar:datetime(),
     Result :: value().
+%% @equiv from_datetime(Format, Datetime, #{})
 from_datetime(Format, Datetime) ->
     from_datetime(Format, Datetime, #{}).
 
 -spec from_datetime(Format, Datetime, Opts) -> Result when
     Format :: format(),
-    Datetime :: datetime(),
+    Datetime :: calendar:datetime(),
     Opts :: opts(),
     Result :: value().
+%% @doc Converts a <code>calendar:datetime()</code> value to a binary representation in the specified format.
 from_datetime(Format, Datetime, Opts) ->
     Datetimezone = {Datetime, {millisecond, 0}, +0000},
     Mod = mod(Format),
@@ -105,6 +158,7 @@ from_datetime(Format, Datetime, Opts) ->
     Format :: format(),
     GregorianSeconds :: gregorian_seconds(),
     Result :: value().
+%% @equiv from_gregorian_seconds(Format, GregorianSeconds, #{})
 from_gregorian_seconds(Format, GregorianSeconds) ->
     from_gregorian_seconds(Format, GregorianSeconds, #{}).
 
@@ -113,40 +167,45 @@ from_gregorian_seconds(Format, GregorianSeconds) ->
     GregorianSeconds :: gregorian_seconds(),
     Opts :: opts(),
     Result :: value().
+%% @doc Converts the given amout of gregorian seconds to a binary representation in the specified format.
 from_gregorian_seconds(Format, GregorianSeconds, Opts) ->
     Datetime = calendar:gregorian_seconds_to_datetime(GregorianSeconds),
     Datetimezone = {Datetime, {millisecond, 0}, +0000},
     Mod = mod(Format),
     Mod:from_datetimezone(Datetimezone, Opts).
 
--spec from_posix_time(Format, UnixTime) -> Result when
+-spec from_posix_time(Format, PosixTime) -> Result when
     Format :: format(),
-    UnixTime :: posix_time(),
+    PosixTime :: posix_time(),
     Result :: value().
-from_posix_time(Format, UnixTime) ->
-    from_posix_time(Format, UnixTime, #{}).
+%% @equiv from_posix_time(Format, PosixTime, #{})
+from_posix_time(Format, PosixTime) ->
+    from_posix_time(Format, PosixTime, #{}).
 
--spec from_posix_time(Format, UnixTime, Opts) -> Result when
+-spec from_posix_time(Format, PosixTime, Opts) -> Result when
     Format :: format(),
-    UnixTime :: posix_time(),
+    PosixTime :: posix_time(),
     Opts :: opts(),
     Result :: value().
-from_posix_time(Format, UnixTime, Opts) ->
-    GregorianSeconds = UnixTime + ?EPOCH_DELTA,
+%% @doc Converts the given POSIX time (in seconds) to a binary representation in the specified format.
+from_posix_time(Format, PosixTime, Opts) ->
+    GregorianSeconds = PosixTime + ?EPOCH_DELTA,
     from_gregorian_seconds(Format, GregorianSeconds, Opts).
 
 -spec from_timestamp(Format, Timestamp) -> Result when
     Format :: format(),
-    Timestamp :: timestamp(),
+    Timestamp :: erlang:timestamp(),
     Result :: value().
+%% @equiv from_timestamp(Format, Timestamp, #{})
 from_timestamp(Format, Timestamp) ->
     from_timestamp(Format, Timestamp, #{}).
 
 -spec from_timestamp(Format, Timestamp, Opts) -> Result when
     Format :: format(),
-    Timestamp :: timestamp(),
+    Timestamp :: erlang:timestamp(),
     Opts :: opts(),
     Result :: value().
+%% @doc Converts the given <code>erlang:timestamp</code> value to a binary representation in the specified format.
 from_timestamp(Format, Timestamp, Opts) ->
     Milliseconds = ncalendar_util:timestamp_to_milliseconds(Timestamp),
     Datetimezone = ncalendar_util:milliseconds_to_datetimezone(Milliseconds, +0000),
@@ -157,6 +216,7 @@ from_timestamp(Format, Timestamp, Opts) ->
     Format :: format(),
     Value :: value(),
     Result :: boolean().
+%% @equiv is_valid(Format, Value, #{})
 is_valid(Format, Value) ->
     is_valid(Format, Value, #{}).
 
@@ -165,6 +225,7 @@ is_valid(Format, Value) ->
     Value :: value(),
     Opts :: opts(),
     Result :: boolean().
+%% @doc Checks if the given binary representation of a datetime is valid for the specified format.
 is_valid(Format, Value, Opts) ->
     Mod = mod(Format),
     Mod:is_valid(Value, Opts).
@@ -172,6 +233,7 @@ is_valid(Format, Value, Opts) ->
 -spec now(Format) -> Result when
     Format :: format(),
     Result :: value().
+%% @equiv now(Format, +0000)
 now(Format) ->
     now(Format, +0000).
 
@@ -179,6 +241,7 @@ now(Format) ->
     Format :: format(),
     Timezone :: timezone(),
     Result :: value().
+%% @equiv now(Format, Timezone, #{})
 now(Format, Timezone) ->
     now(Format, Timezone, #{}).
 
@@ -187,6 +250,7 @@ now(Format, Timezone) ->
     Timezone :: timezone(),
     Opts :: opts(),
     Result :: value().
+%% @doc Returns the current datetime in the specified format.
 now(Format, Timezone, Opts) ->
     Datetimezone = ncalendar_util:milliseconds_to_datetimezone(
         erlang:system_time(millisecond) + (?EPOCH_DELTA * 1000),
@@ -199,6 +263,7 @@ now(Format, Timezone, Opts) ->
     Format :: format(),
     Value :: value(),
     Result :: timezone().
+%% @doc Returns the timezone of the given binary representation of a datetime.
 timezone(Format, Value) ->
     Mod = mod(Format),
     {_Date, _Time, Timezone} = Mod:to_datetimezone(Value),
@@ -207,7 +272,8 @@ timezone(Format, Value) ->
 -spec to_datetime(Format, Value) -> Result when
     Format :: format(),
     Value :: value(),
-    Result :: datetime().
+    Result :: calendar:datetime().
+%% @doc Converts the given binary representation of a datetime to a <code>calendar:datetime()</code> value.
 to_datetime(Format, Value) ->
     Mod = mod(Format),
     Datetimezone = Mod:to_datetimezone(Value),
@@ -217,6 +283,7 @@ to_datetime(Format, Value) ->
     Format :: format(),
     Value :: value(),
     Result :: gregorian_seconds().
+%% @doc Converts the given binary representation of a datetime to gregorian seconds.
 to_gregorian_seconds(Format, Value) ->
     Mod = mod(Format),
     Datetimezone = Mod:to_datetimezone(Value),
@@ -226,6 +293,7 @@ to_gregorian_seconds(Format, Value) ->
     Format :: format(),
     Value :: value(),
     Result :: posix_time().
+%% @doc Converts the given binary representation of a datetime to POSIX time (in seconds).
 to_posix_time(Format, Value) ->
     GregorianSeconds = to_gregorian_seconds(Format, Value),
     GregorianSeconds - ?EPOCH_DELTA.
@@ -233,7 +301,8 @@ to_posix_time(Format, Value) ->
 -spec to_timestamp(Format, Value) -> Result when
     Format :: format(),
     Value :: value(),
-    Result :: timestamp().
+    Result :: erlang:timestamp().
+%% @doc Converts the given binary representation of a datetime to a <code>erlang:timestamp()</code> value.
 to_timestamp(Format, Value) ->
     Mod = mod(Format),
     Datetimezone = Mod:to_datetimezone(Value),
@@ -244,6 +313,7 @@ to_timestamp(Format, Value) ->
 %%%-----------------------------------------------------------------------------
 -spec timezones() -> Result when
     Result :: [timezone()].
+%% @doc Returns a list of all supported timezones.
 timezones() ->
     ?TIMEZONES.
 
@@ -252,6 +322,7 @@ timezones() ->
     Value :: value(),
     Timezone :: timezone(),
     Result :: value().
+%% @equiv shift_timezone(Format, Value, Timezone, #{})
 shift_timezone(Format, Value, Timezone) ->
     shift_timezone(Format, Value, Timezone, #{}).
 
@@ -261,6 +332,7 @@ shift_timezone(Format, Value, Timezone) ->
     Timezone :: timezone(),
     Opts :: opts(),
     Result :: value().
+%% @doc Shifts the timezone of the given binary representation of a datetime to the specified timezone.
 shift_timezone(Format, Value, Timezone, Opts) ->
     case timezone(Format, Value) of
         undefined ->

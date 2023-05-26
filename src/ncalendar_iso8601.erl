@@ -11,30 +11,42 @@
 %% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %% See the License for the specific language governing permissions and
 %% limitations under the License
+%
+%% @doc <code>ncalendar</code>'s <code>ISO 8601</code> format module.
 -module(ncalendar_iso8601).
 
 %%% BEHAVIOURS
 -behaviour(ncalendar_format).
 
-%%% EXTERNAL EXPORTS
+%%% FORMAT EXPORTS
 -export([
     from_datetimezone/2,
     is_valid/2,
     to_datetimezone/1
 ]).
 
-%% TYPES
--type opts() :: #{precision => precision(), extended => boolean()}.
--type precision() :: millisecond.
+%%% EXTERNAL EXPORTS
+-export([
+    format_timezone/1
+]).
 
+%%% TYPES
+-type opts() :: #{precision => precision(), extended => boolean()}.
+% Options for the <code>iso8601</code> format.
+-type precision() :: millisecond.
+% Subsecond time precision level.
+
+%%% EXPORT TYPES
 -export_type([
     opts/0,
     precision/0
 ]).
 
 %%%-----------------------------------------------------------------------------
-%%% EXTERNAL EXPORTS
+%%% FORMAT EXPORTS
 %%%-----------------------------------------------------------------------------
+%% @private
+%% @doc Converts a <code>datetimezone()</code> value to an <code>iso8601</code> binary.
 from_datetimezone({Datetime, Subseconds, <<"Z">>}, Opts) ->
     from_datetimezone({Datetime, Subseconds, +0000}, Opts);
 %% Extended Milliseconds
@@ -106,6 +118,8 @@ from_datetimezone({_Datetime, _Subseconds, Timezone} = Datetimezone, _Opts) ->
         format_timezone(Timezone)
     ]).
 
+%% @private
+%% @doc Checks if a value is a valid <code>iso8601</code> datetime.
 is_valid(Value, Opts) when is_binary(Value) ->
     is_valid(erlang:binary_to_list(Value), Opts);
 %% Extended Milliseconds
@@ -256,6 +270,8 @@ is_valid([Y1, Y2, Y3, Y4, Mo1, Mo2, D1, D2, $T, H1, H2, Mi1, Mi2, S1, S2 | TZ], 
 is_valid(_Value, _Opts) ->
     false.
 
+%% @private
+%% @doc Converts an <code>iso8601</code> binary to a <code>datetimezone()</code> value.
 to_datetimezone(Value) when is_binary(Value) ->
     to_datetimezone(erlang:binary_to_list(Value));
 %% Extended Milliseconds
@@ -323,6 +339,21 @@ to_datetimezone(Value) ->
     erlang:throw({error, ncalendar_iso8601, {unrecognized_value, Value}}).
 
 %%%-----------------------------------------------------------------------------
+%%% EXTERNAL EXPORTS
+%%%-----------------------------------------------------------------------------
+-spec format_timezone(Timezone) -> Binary when
+    Timezone :: ncalendar:timezone(),
+    Binary :: binary().
+%% @doc Formats a timezone to a binary in <code>iso8601</code> format.
+format_timezone(Timezone) ->
+    case ncalendar_util:is_valid_timezone(Timezone) of
+        true ->
+            do_format_timezone(Timezone);
+        _False ->
+            erlang:throw({error, ncalendar_iso8601, {unsupported_timezone, Timezone}})
+    end.
+
+%%%-----------------------------------------------------------------------------
 %%% INTERNAL FUNCTIONS
 %%%-----------------------------------------------------------------------------
 do_format_timezone(undefined) ->
@@ -345,14 +376,6 @@ do_format_timezone(Val) when Val > -1000 ->
     erlang:list_to_binary([$-, $0, erlang:integer_to_binary(erlang:abs(Val))]);
 do_format_timezone(Val) ->
     erlang:integer_to_binary(Val).
-
-format_timezone(Timezone) ->
-    case ncalendar_util:is_valid_timezone(Timezone) of
-        true ->
-            do_format_timezone(Timezone);
-        _False ->
-            erlang:throw({error, ncalendar_iso8601, {unsupported_timezone, Timezone}})
-    end.
 
 resolve_timezone_alias("Z") ->
     "+0000";
