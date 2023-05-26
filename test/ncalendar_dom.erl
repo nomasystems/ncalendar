@@ -49,4 +49,4 @@ opts(_Format) ->
     triq_dom:return(#{}).
 
 timezone() ->
-    triq_dom:elements(?TIMEZONES).
+    triq_dom:elements([undefined | ?TIMEZONES]).

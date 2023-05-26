@@ -42,6 +42,7 @@ Add `ncalendar` to your project dependencies.
 | `ncalendar:to_gregorian_seconds/2` | Converts a binary representation of a datetime in the given format to the integer value of gregorian seconds |
 | `ncalendar:to_posix_time/2` | Converts a binary representation of a datetime in the given format to a POSIX time value (seconds since Epoch) |
 | `ncalendar:to_timestamp/2` | Converts a binary representation of a datetime in the given format to an `erlang:timestamp()` value |
+| `ncalendar:timezones/0` | Returns the list of timezones as UTC offsets |
 
 ## Supported formats
 

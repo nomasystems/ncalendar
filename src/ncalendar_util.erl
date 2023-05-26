@@ -93,6 +93,8 @@ is_valid_time(_Time) ->
 -spec is_valid_timezone(Timezone) -> Result when
     Timezone :: timezone(),
     Result :: boolean().
+is_valid_timezone(undefined) ->
+    true;
 is_valid_timezone(Timezone) ->
     lists:member(Timezone, ?TIMEZONES).
 
