@@ -32,6 +32,7 @@ all() ->
         datetime,
         gregorian_seconds,
         now,
+        shift_timezone,
         timestamp,
         timezone,
         posix_time
@@ -87,31 +88,31 @@ convert(_Conf) ->
     ISO8601Ms = <<"20140519T100000.000+0100">>,
     ISO8601Ext = <<"2014-05-19T10:00:00+0100">>,
     ISO8601ExtMs = <<"2014-05-19T10:00:00.000+0100">>,
-    RFC2109 = <<"Mon, 19-May-2014 09:00:00 GMT">>,
-    IMFFixdate = <<"Mon, 19 May 2014 09:00:00 GMT">>,
+    HTTPDate = <<"Mon, 19-May-2014 09:00:00 GMT">>,
+    IMFFixdate = <<"Mon, 19 May 2014 10:00:00 +0100">>,
 
     ISO8601Ms = ncalendar:convert(iso8601, iso8601, ISO8601, ?OPTS_MS),
     ISO8601Ext = ncalendar:convert(iso8601, iso8601, ISO8601, ?OPTS_EXT),
     ISO8601ExtMs = ncalendar:convert(iso8601, iso8601, ISO8601, ?OPTS_EXT_MS),
-    RFC2109 = ncalendar:convert(iso8601, rfc2109, ISO8601),
+    HTTPDate = ncalendar:convert(iso8601, http_date, ISO8601),
     IMFFixdate = ncalendar:convert(iso8601, imf_fixdate, ISO8601),
 
     ISO8601 = ncalendar:convert(iso8601, iso8601, ISO8601Ms),
     ISO8601Ext = ncalendar:convert(iso8601, iso8601, ISO8601Ms, ?OPTS_EXT),
     ISO8601ExtMs = ncalendar:convert(iso8601, iso8601, ISO8601Ms, ?OPTS_EXT_MS),
-    RFC2109 = ncalendar:convert(iso8601, rfc2109, ISO8601Ms),
+    HTTPDate = ncalendar:convert(iso8601, http_date, ISO8601Ms),
     IMFFixdate = ncalendar:convert(iso8601, imf_fixdate, ISO8601Ms),
 
     ISO8601 = ncalendar:convert(iso8601, iso8601, ISO8601Ext),
     ISO8601Ms = ncalendar:convert(iso8601, iso8601, ISO8601Ext, ?OPTS_MS),
     ISO8601ExtMs = ncalendar:convert(iso8601, iso8601, ISO8601Ext, ?OPTS_EXT_MS),
-    RFC2109 = ncalendar:convert(iso8601, rfc2109, ISO8601Ext),
+    HTTPDate = ncalendar:convert(iso8601, http_date, ISO8601Ext),
     IMFFixdate = ncalendar:convert(iso8601, imf_fixdate, ISO8601Ext),
 
     ISO8601 = ncalendar:convert(iso8601, iso8601, ISO8601ExtMs),
     ISO8601Ms = ncalendar:convert(iso8601, iso8601, ISO8601ExtMs, ?OPTS_MS),
     ISO8601Ext = ncalendar:convert(iso8601, iso8601, ISO8601ExtMs, ?OPTS_EXT),
-    RFC2109 = ncalendar:convert(iso8601, rfc2109, ISO8601ExtMs),
+    HTTPDate = ncalendar:convert(iso8601, http_date, ISO8601ExtMs),
     IMFFixdate = ncalendar:convert(iso8601, imf_fixdate, ISO8601ExtMs).
 
 convert_without_tz(_Conf) ->
@@ -119,44 +120,44 @@ convert_without_tz(_Conf) ->
     ISO8601Ms = <<"20140519T100000.000Z">>,
     ISO8601Ext = <<"2014-05-19T10:00:00Z">>,
     ISO8601ExtMs = <<"2014-05-19T10:00:00.000Z">>,
-    RFC2109 = <<"Mon, 19-May-2014 10:00:00 GMT">>,
+    HTTPDate = <<"Mon, 19-May-2014 10:00:00 GMT">>,
     IMFFixdate = <<"Mon, 19 May 2014 10:00:00 GMT">>,
 
     ISO8601Ms = ncalendar:convert(iso8601, iso8601, ISO8601, ?OPTS_MS),
     ISO8601Ext = ncalendar:convert(iso8601, iso8601, ISO8601, ?OPTS_EXT),
     ISO8601ExtMs = ncalendar:convert(iso8601, iso8601, ISO8601, ?OPTS_EXT_MS),
-    RFC2109 = ncalendar:convert(iso8601, rfc2109, ISO8601),
+    HTTPDate = ncalendar:convert(iso8601, http_date, ISO8601),
     IMFFixdate = ncalendar:convert(iso8601, imf_fixdate, ISO8601),
 
     ISO8601 = ncalendar:convert(iso8601, iso8601, ISO8601Ms),
     ISO8601Ext = ncalendar:convert(iso8601, iso8601, ISO8601Ms, ?OPTS_EXT),
     ISO8601ExtMs = ncalendar:convert(iso8601, iso8601, ISO8601Ms, ?OPTS_EXT_MS),
-    RFC2109 = ncalendar:convert(iso8601, rfc2109, ISO8601Ms),
+    HTTPDate = ncalendar:convert(iso8601, http_date, ISO8601Ms),
     IMFFixdate = ncalendar:convert(iso8601, imf_fixdate, ISO8601Ms),
 
     ISO8601 = ncalendar:convert(iso8601, iso8601, ISO8601Ext),
     ISO8601Ms = ncalendar:convert(iso8601, iso8601, ISO8601Ext, ?OPTS_MS),
     ISO8601ExtMs = ncalendar:convert(iso8601, iso8601, ISO8601Ext, ?OPTS_EXT_MS),
-    RFC2109 = ncalendar:convert(iso8601, rfc2109, ISO8601Ext),
+    HTTPDate = ncalendar:convert(iso8601, http_date, ISO8601Ext),
     IMFFixdate = ncalendar:convert(iso8601, imf_fixdate, ISO8601Ext),
 
     ISO8601 = ncalendar:convert(iso8601, iso8601, ISO8601ExtMs),
     ISO8601Ms = ncalendar:convert(iso8601, iso8601, ISO8601ExtMs, ?OPTS_MS),
     ISO8601Ext = ncalendar:convert(iso8601, iso8601, ISO8601ExtMs, ?OPTS_EXT),
-    RFC2109 = ncalendar:convert(iso8601, rfc2109, ISO8601ExtMs),
+    HTTPDate = ncalendar:convert(iso8601, http_date, ISO8601ExtMs),
     IMFFixdate = ncalendar:convert(iso8601, imf_fixdate, ISO8601ExtMs),
 
-    ISO8601 = ncalendar:convert(rfc2109, iso8601, RFC2109),
-    ISO8601Ms = ncalendar:convert(rfc2109, iso8601, RFC2109, ?OPTS_MS),
-    ISO8601Ext = ncalendar:convert(rfc2109, iso8601, RFC2109, ?OPTS_EXT),
-    ISO8601ExtMs = ncalendar:convert(rfc2109, iso8601, RFC2109, ?OPTS_EXT_MS),
-    IMFFixdate = ncalendar:convert(rfc2109, imf_fixdate, RFC2109),
+    ISO8601 = ncalendar:convert(http_date, iso8601, HTTPDate),
+    ISO8601Ms = ncalendar:convert(http_date, iso8601, HTTPDate, ?OPTS_MS),
+    ISO8601Ext = ncalendar:convert(http_date, iso8601, HTTPDate, ?OPTS_EXT),
+    ISO8601ExtMs = ncalendar:convert(http_date, iso8601, HTTPDate, ?OPTS_EXT_MS),
+    IMFFixdate = ncalendar:convert(http_date, imf_fixdate, HTTPDate),
 
     ISO8601 = ncalendar:convert(imf_fixdate, iso8601, IMFFixdate),
     ISO8601Ms = ncalendar:convert(imf_fixdate, iso8601, IMFFixdate, ?OPTS_MS),
     ISO8601Ext = ncalendar:convert(imf_fixdate, iso8601, IMFFixdate, ?OPTS_EXT),
     ISO8601ExtMs = ncalendar:convert(imf_fixdate, iso8601, IMFFixdate, ?OPTS_EXT_MS),
-    RFC2109 = ncalendar:convert(imf_fixdate, rfc2109, IMFFixdate).
+    HTTPDate = ncalendar:convert(imf_fixdate, http_date, IMFFixdate).
 
 datetime(_Conf) ->
     Datetime = calendar:universal_time(),
@@ -182,19 +183,36 @@ timestamp(_Conf) ->
     {MSecs, Secs, _MicroSecs1} = Timestamp,
     {MSecs, Secs, 0} = ncalendar:to_timestamp(iso8601, Bin).
 
+shift_timezone(_Conf) ->
+    ISO8601 = <<"20140519T100000+1000">>,
+    ISO8601Ms = <<"20140519T100000.000+1000">>,
+    ISO8601Ext = <<"2014-05-19T10:00:00-0700">>,
+    ISO8601ExtMs = <<"2014-05-19T10:00:00.000Z">>,
+    HTTPDate = <<"Mon, 19-May-2014 10:00:00 GMT">>,
+    IMFFixdate = <<"Mon, 19 May 2014 10:00:00 GMT">>,
+
+    <<"20140519T000000Z">> = ncalendar:shift_timezone(iso8601, ISO8601, 0),
+    <<"20140518T140000.000-1000">> = ncalendar:shift_timezone(iso8601, ISO8601Ms, -1000, ?OPTS_MS),
+    <<"2014-05-20T03:00:00+1000">> = ncalendar:shift_timezone(iso8601, ISO8601Ext, 1000, ?OPTS_EXT),
+    <<"2014-05-19T22:00:00.000+1200">> = ncalendar:shift_timezone(
+        iso8601, ISO8601ExtMs, 1200, ?OPTS_EXT_MS
+    ),
+    <<"Mon, 19-May-2014 10:00:00 GMT">> = ncalendar:shift_timezone(http_date, HTTPDate, 0),
+    <<"Mon, 19 May 2014 12:00:00 +0200">> = ncalendar:shift_timezone(imf_fixdate, IMFFixdate, 200).
+
 timezone(_Conf) ->
     ISO8601 = <<"20140519T100000">>,
-    ISO8601Ms = <<"20140519T100000.000+0010">>,
-    ISO8601Ext = <<"2014-05-19T10:00:00-0007">>,
+    ISO8601Ms = <<"20140519T100000.000+1000">>,
+    ISO8601Ext = <<"2014-05-19T10:00:00-0700">>,
     ISO8601ExtMs = <<"2014-05-19T10:00:00.000Z">>,
-    RFC2109 = <<"Mon, 19-May-2014 10:00:00 GMT">>,
+    HTTPDate = <<"Mon, 19-May-2014 10:00:00 GMT">>,
     IMFFixdate = <<"Mon, 19 May 2014 10:00:00 GMT">>,
 
     undefined = ncalendar:timezone(iso8601, ISO8601),
-    0010 = ncalendar:timezone(iso8601, ISO8601Ms),
-    -0007 = ncalendar:timezone(iso8601, ISO8601Ext),
+    1000 = ncalendar:timezone(iso8601, ISO8601Ms),
+    -0700 = ncalendar:timezone(iso8601, ISO8601Ext),
     0000 = ncalendar:timezone(iso8601, ISO8601ExtMs),
-    0000 = ncalendar:timezone(rfc2109, RFC2109),
+    0000 = ncalendar:timezone(http_date, HTTPDate),
     0000 = ncalendar:timezone(imf_fixdate, IMFFixdate).
 
 posix_time(_Conf) ->

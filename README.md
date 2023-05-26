@@ -64,7 +64,7 @@ Add `ncalendar` to your project dependencies.
 </td>
 </tr>
 <tr>
-<td><code>rfc2109</code></td>
+<td><code>http_date</code></td>
 <td>
 
 ```erl
