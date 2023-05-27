@@ -11,6 +11,9 @@
 %% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %% See the License for the specific language governing permissions and
 %% limitations under the License
+%
+%% @private
+%% @doc Utility functions for <code>ncalendar</code>.
 -module(ncalendar_util).
 
 %%% INCLUDE FILES
@@ -40,10 +43,10 @@
 %%% EXTERNAL EXPORTS
 %%%-----------------------------------------------------------------------------
 -spec datetime_to_datetimezone(Datetime, Subseconds, Timezone) -> Result when
-    Datetime :: datetime(),
-    Subseconds :: sub_seconds(),
-    Timezone :: timezone(),
-    Result :: datetimezone().
+    Datetime :: calendar:datetime(),
+    Subseconds :: ncalendar_format:sub_seconds(),
+    Timezone :: ncalendar:timezone(),
+    Result :: ncalendar_format:datetimezone().
 datetime_to_datetimezone(Datetime, Subseconds, +0000) ->
     {Datetime, Subseconds, +0000};
 datetime_to_datetimezone(RawDatetime, Subseconds, Timezone) ->
@@ -53,8 +56,8 @@ datetime_to_datetimezone(RawDatetime, Subseconds, Timezone) ->
     {Datetime, Subseconds, Timezone}.
 
 -spec datetimezone_to_datetime(Datetimezone) -> Result when
-    Datetimezone :: datetimezone(),
-    Result :: datetime().
+    Datetimezone :: ncalendar_format:datetimezone(),
+    Result :: calendar:datetime().
 datetimezone_to_datetime({Datetime, _Subseconds, +0000}) ->
     Datetime;
 datetimezone_to_datetime({Datetime, _Subseconds, Timezone}) ->
@@ -62,14 +65,14 @@ datetimezone_to_datetime({Datetime, _Subseconds, Timezone}) ->
     calendar:gregorian_seconds_to_datetime(LocalSeconds).
 
 -spec datetimezone_to_gregorian_seconds(Datetimezone) -> Result when
-    Datetimezone :: datetimezone(),
-    Result :: gregorian_seconds().
+    Datetimezone :: ncalendar_format:datetimezone(),
+    Result :: ncalendar:gregorian_seconds().
 datetimezone_to_gregorian_seconds({Datetime, _Subseconds, Timezone}) ->
     calendar:datetime_to_gregorian_seconds(Datetime) + timezone_diff(Timezone).
 
 -spec datetimezone_to_timestamp(Datetimezone) -> Result when
-    Datetimezone :: datetimezone(),
-    Result :: timestamp().
+    Datetimezone :: ncalendar_format:datetimezone(),
+    Result :: erlang:timestamp().
 datetimezone_to_timestamp({Datetime, {millisecond, Milliseconds}, Timezone}) ->
     GregorianSeconds = calendar:datetime_to_gregorian_seconds(Datetime) + timezone_diff(Timezone),
     Secs = GregorianSeconds - ?JANUARY_1ST_1970,
@@ -77,13 +80,13 @@ datetimezone_to_timestamp({Datetime, {millisecond, Milliseconds}, Timezone}) ->
     {Secs div 1000000, Secs rem 1000000, MicroSecs}.
 
 -spec is_valid_date(Date) -> Result when
-    Date :: date(),
+    Date :: calendar:date(),
     Result :: boolean().
 is_valid_date({Year, Month, Day}) ->
     calendar:valid_date(Year, Month, Day).
 
 -spec is_valid_time(Time) -> Result when
-    Time :: time(),
+    Time :: calendar:time(),
     Result :: boolean().
 is_valid_time({H, M, S}) when H >= 0, H < 24, M >= 0, M < 60, S >= 0, S < 60 ->
     true;
@@ -91,7 +94,7 @@ is_valid_time(_Time) ->
     false.
 
 -spec is_valid_timezone(Timezone) -> Result when
-    Timezone :: timezone(),
+    Timezone :: ncalendar:timezone(),
     Result :: boolean().
 is_valid_timezone(undefined) ->
     true;
@@ -100,8 +103,8 @@ is_valid_timezone(Timezone) ->
 
 -spec milliseconds_to_datetimezone(Milliseconds, Timezone) -> Result when
     Milliseconds :: non_neg_integer(),
-    Timezone :: timezone(),
-    Result :: datetimezone().
+    Timezone :: ncalendar:timezone(),
+    Result :: ncalendar_format:datetimezone().
 milliseconds_to_datetimezone(Milliseconds, TimeZone) ->
     GregorianSeconds = Milliseconds div 1000,
     RestMilliseconds = Milliseconds - GregorianSeconds * 1000,
@@ -133,7 +136,7 @@ pad(4, N) ->
     [$0, $0, $0 | erlang:integer_to_list(N)].
 
 -spec timestamp_to_milliseconds(Timestamp) -> Result when
-    Timestamp :: timestamp(),
+    Timestamp :: erlang:timestamp(),
     Result :: non_neg_integer().
 timestamp_to_milliseconds({MSecs, Secs, MicroSecs}) ->
     MilliSecs = MicroSecs div 1000,
@@ -144,7 +147,7 @@ timestamp_to_milliseconds({MSecs, Secs, MicroSecs}) ->
     YearList :: list(),
     MonthList :: list(),
     DayList :: list(),
-    Result :: date().
+    Result :: calendar:date().
 to_date(YearList, MonthList, DayList) ->
     Year = erlang:list_to_integer(YearList),
     Month = erlang:list_to_integer(MonthList),
@@ -155,7 +158,7 @@ to_date(YearList, MonthList, DayList) ->
     HourList :: list(),
     MinList :: list(),
     SecList :: list(),
-    Result :: time().
+    Result :: calendar:time().
 to_time(HourList, MinList, SecList) ->
     Hour = erlang:list_to_integer(HourList),
     Min = erlang:list_to_integer(MinList),
@@ -164,7 +167,7 @@ to_time(HourList, MinList, SecList) ->
 
 -spec to_timezone(TimezoneList) -> Result when
     TimezoneList :: list(),
-    Result :: timezone().
+    Result :: ncalendar:timezone().
 to_timezone([]) ->
     undefined;
 to_timezone(TimezoneList) ->
@@ -174,7 +177,7 @@ to_timezone(TimezoneList) ->
 %%% INTERNAL FUNCTIONS
 %%%-----------------------------------------------------------------------------
 -spec timezone_diff(Timezone) -> Result when
-    Timezone :: timezone(),
+    Timezone :: ncalendar:timezone(),
     Result :: integer().
 timezone_diff(undefined) ->
     0;

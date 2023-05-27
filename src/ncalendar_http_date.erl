@@ -11,12 +11,14 @@
 %% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %% See the License for the specific language governing permissions and
 %% limitations under the License
+%
+%% @doc <code>ncalendar</code>'s <code>HTTP Date</code> format module.
 -module(ncalendar_http_date).
 
 %%% BEHAVIOURS
 -behaviour(ncalendar_format).
 
-%%% EXTERNAL EXPORTS
+%%% FORMAT EXPORTS
 -export([
     from_datetimezone/2,
     is_valid/2,
@@ -39,8 +41,10 @@
 -define(GMT_TIMEZONE, "+0000").
 
 %%%-----------------------------------------------------------------------------
-%%% EXTERNAL EXPORTS
+%%% FORMAT EXPORTS
 %%%-----------------------------------------------------------------------------
+%% @private
+%% @doc Converts a <code>datetimezone()</code> value to an <code>HTTP Date</code> binary.
 from_datetimezone({Datetime, Subseconds, <<"GMT">>}, Opts) ->
     from_datetimezone({Datetime, Subseconds, +0000}, Opts);
 from_datetimezone({{{Year, Month, Day}, {Hour, Min, Sec}}, _Subseconds, +0000}, _Opts) ->
@@ -65,6 +69,8 @@ from_datetimezone({{{Year, Month, Day}, {Hour, Min, Sec}}, _Subseconds, +0000}, 
 from_datetimezone({Datetime, Subseconds, _TZ}, Opts) ->
     from_datetimezone({Datetime, Subseconds, +0000}, Opts).
 
+%% @private
+%% @doc Checks if a value is a valid <code>HTTP Date</code> datetime.
 is_valid(Value, Opts) when is_binary(Value) ->
     is_valid(erlang:binary_to_list(Value), Opts);
 is_valid(
@@ -118,6 +124,8 @@ is_valid(
 is_valid(_Value, _Opts) ->
     false.
 
+%% @private
+%% @doc Converts an <code>HTTP Date</code> binary to a <code>datetimezone()</code> value.
 to_datetimezone(Value) when is_binary(Value) ->
     to_datetimezone(erlang:binary_to_list(Value));
 to_datetimezone(
