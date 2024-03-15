@@ -13,6 +13,9 @@
 %% limitations under the License.
 -module(ncalendar_SUITE).
 
+%%% INCLUDE FILES
+-include_lib("stdlib/include/assert.hrl").
+
 %%% EXTERNAL EXPORTS
 -compile([export_all, nowarn_export_all]).
 
@@ -162,13 +165,25 @@ convert_without_tz(_Conf) ->
 datetime(_Conf) ->
     Datetime = calendar:universal_time(),
     Bin = ncalendar:from_datetime(iso8601, Datetime),
-    Datetime = ncalendar:to_datetime(iso8601, Bin).
+    Datetime = ncalendar:to_datetime(iso8601, Bin),
+
+    ISO8601UTC = <<"20140519T100000Z">>,
+    ISO8601 = <<"20140519T100000+1000">>,
+    UTC = ncalendar:to_datetime(iso8601, ISO8601UTC),
+    Zone = ncalendar:to_datetime(iso8601, ISO8601),
+    ?assertEqual(UTC, Zone).
 
 gregorian_seconds(_Conf) ->
     Datetime = calendar:universal_time(),
     GregorianSeconds = calendar:datetime_to_gregorian_seconds(Datetime),
     Bin = ncalendar:from_gregorian_seconds(iso8601, GregorianSeconds),
-    GregorianSeconds = ncalendar:to_gregorian_seconds(iso8601, Bin).
+    GregorianSeconds = ncalendar:to_gregorian_seconds(iso8601, Bin),
+
+    ISO8601UTC = <<"20140519T100000Z">>,
+    ISO8601 = <<"20140519T100000+1000">>,
+    UTC = ncalendar:to_gregorian_seconds(iso8601, ISO8601UTC),
+    Zone = ncalendar:to_gregorian_seconds(iso8601, ISO8601),
+    ?assertNotEqual(UTC, Zone).
 
 now(_Conf) ->
     DateTime = calendar:now_to_datetime(erlang:timestamp()),
@@ -181,7 +196,13 @@ timestamp(_Conf) ->
     Timestamp = erlang:timestamp(),
     Bin = ncalendar:from_timestamp(iso8601, Timestamp),
     {MSecs, Secs, _MicroSecs1} = Timestamp,
-    {MSecs, Secs, 0} = ncalendar:to_timestamp(iso8601, Bin).
+    {MSecs, Secs, 0} = ncalendar:to_timestamp(iso8601, Bin),
+
+    ISO8601UTC = <<"20140519T100000Z">>,
+    ISO8601 = <<"20140519T100000+1000">>,
+    UTC = ncalendar:to_timestamp(iso8601, ISO8601UTC),
+    Zone = ncalendar:to_timestamp(iso8601, ISO8601),
+    ?assertNotEqual(UTC, Zone).
 
 shift_timezone(_Conf) ->
     ISO8601 = <<"20140519T100000+1000">>,
