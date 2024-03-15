@@ -67,14 +67,14 @@ datetimezone_to_datetime({Datetime, _Subseconds, Timezone}) ->
 -spec datetimezone_to_gregorian_seconds(Datetimezone) -> Result when
     Datetimezone :: ncalendar_format:datetimezone(),
     Result :: ncalendar:gregorian_seconds().
-datetimezone_to_gregorian_seconds({Datetime, _Subseconds, Timezone}) ->
-    calendar:datetime_to_gregorian_seconds(Datetime) + timezone_diff(Timezone).
+datetimezone_to_gregorian_seconds({Datetime, _Subseconds, _Timezone}) ->
+    calendar:datetime_to_gregorian_seconds(Datetime).
 
 -spec datetimezone_to_timestamp(Datetimezone) -> Result when
     Datetimezone :: ncalendar_format:datetimezone(),
     Result :: erlang:timestamp().
-datetimezone_to_timestamp({Datetime, {millisecond, Milliseconds}, Timezone}) ->
-    GregorianSeconds = calendar:datetime_to_gregorian_seconds(Datetime) + timezone_diff(Timezone),
+datetimezone_to_timestamp({Datetime, {millisecond, Milliseconds}, _Timezone}) ->
+    GregorianSeconds = calendar:datetime_to_gregorian_seconds(Datetime),
     Secs = GregorianSeconds - ?JANUARY_1ST_1970,
     MicroSecs = Milliseconds * 1000,
     {Secs div 1000000, Secs rem 1000000, MicroSecs}.
