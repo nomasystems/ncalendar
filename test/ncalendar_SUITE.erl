@@ -13,6 +13,7 @@
 %% limitations under the License.
 -module(ncalendar_SUITE).
 
+%%% INCLUDE FILES
 -include_lib("stdlib/include/assert.hrl").
 
 %%% EXTERNAL EXPORTS
