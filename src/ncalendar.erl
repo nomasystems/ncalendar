@@ -47,6 +47,11 @@
     shift_timezone/4
 ]).
 
+%%% EXPORT TYPES
+-export_type([
+    gregorian_seconds/0
+]).
+
 %%% TYPES
 -type format() :: iso8601 | http_date | imf_fixdate.
 -type gregorian_seconds() :: non_neg_integer().
