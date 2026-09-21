@@ -1,6 +1,6 @@
--module(ncalendar_http_date_SUITE).
+-module(ncalendar_netscape_cookie_date_SUITE).
 
--moduledoc "Test suite for the `ncalendar_http_date` format module.".
+-moduledoc "Test suite for the `ncalendar_netscape_cookie_date` format module.".
 
 %%%-----------------------------------------------------------------------------
 %% CT CALLBACKS
@@ -39,24 +39,24 @@ all() ->
 %%%-----------------------------------------------------------------------------
 from_datetimezone(_Conf) ->
     Opts = ?OPTS_DEFAULT,
-    <<"Mon, 19-May-2014 10:00:00 GMT">> = ncalendar_http_date:from_datetimezone(
+    <<"Mon, 19-May-2014 10:00:00 GMT">> = ncalendar_netscape_cookie_date:from_datetimezone(
         ?DATETIMEZONE_1, Opts
     ),
-    <<"Mon, 19-May-2014 12:00:00 GMT">> = ncalendar_http_date:from_datetimezone(
+    <<"Mon, 19-May-2014 12:00:00 GMT">> = ncalendar_netscape_cookie_date:from_datetimezone(
         ?DATETIMEZONE_2, Opts
     ),
-    <<"Sat, 31-May-2014 21:00:00 GMT">> = ncalendar_http_date:from_datetimezone(
+    <<"Sat, 31-May-2014 21:00:00 GMT">> = ncalendar_netscape_cookie_date:from_datetimezone(
         ?DATETIMEZONE_3, Opts
     ).
 
 is_valid(_Conf) ->
     Opts = ?OPTS_DEFAULT,
-    true = ncalendar_http_date:is_valid(<<"Mon, 19-May-2014 10:00:00 GMT">>, Opts),
-    true = ncalendar_http_date:is_valid(<<"Mon, 19-May-2014 12:00:00 GMT">>, Opts),
-    true = ncalendar_http_date:is_valid(<<"Sun, 01-Jun-2014 08:00:00 GMT">>, Opts),
+    true = ncalendar_netscape_cookie_date:is_valid(<<"Mon, 19-May-2014 10:00:00 GMT">>, Opts),
+    true = ncalendar_netscape_cookie_date:is_valid(<<"Mon, 19-May-2014 12:00:00 GMT">>, Opts),
+    true = ncalendar_netscape_cookie_date:is_valid(<<"Sun, 01-Jun-2014 08:00:00 GMT">>, Opts),
 
-    false = ncalendar_http_date:is_valid(<<"Mon, 01-Jun-2014 21:00:00 GMT">>, Opts).
+    false = ncalendar_netscape_cookie_date:is_valid(<<"Mon, 01-Jun-2014 21:00:00 GMT">>, Opts).
 
 to_datetimezone(_Conf) ->
     Date1 = {{{2014, 5, 19}, {10, 0, 0}}, {millisecond, 0}, +0000},
-    Date1 = ncalendar_http_date:to_datetimezone(<<"Mon, 19-May-2014 10:00:00 GMT">>).
+    Date1 = ncalendar_netscape_cookie_date:to_datetimezone(<<"Mon, 19-May-2014 10:00:00 GMT">>).

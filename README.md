@@ -63,7 +63,7 @@ Add `ncalendar` to your project dependencies.
 </td>
 </tr>
 <tr>
-<td><code>http_date</code></td>
+<td><code>netscape_cookie_date</code></td>
 <td>
 
 ```erl
@@ -81,6 +81,22 @@ Add `ncalendar` to your project dependencies.
 </td>
 </tr>
 </table>
+
+### Which one to use
+
+| Format | Looks like | Where it comes from |
+| ------ | ---------- | ------------------- |
+| `iso8601` | `20140519T100000Z`, or `2014-05-19T10:00:00Z` with `extended` | [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html). The default choice for storing and exchanging timestamps |
+| `imf_fixdate` | `Mon, 19 May 2014 10:00:00 GMT` | IMF-fixdate, the only form [RFC 9110 §5.6.7](https://www.rfc-editor.org/rfc/rfc9110#section-5.6.7) allows a sender to generate in an HTTP header field such as `Date` or `Last-Modified`, and the one [RFC 6265 §4.1.1](https://www.rfc-editor.org/rfc/rfc6265#section-4.1.1) asks for in a cookie `Expires` |
+| `netscape_cookie_date` | `Mon, 19-May-2014 10:00:00 GMT` | The `Expires` date of Netscape's original cookie proposal. No RFC defines it: [RFC 2109 §10.1.2](https://www.rfc-editor.org/rfc/rfc2109#section-10.1.2) only records the shape as a note on that proposal, and [RFC 6265 §5.1.1](https://www.rfc-editor.org/rfc/rfc6265#section-5.1.1) still parses it. Use it to read an old cookie, not to write a new date |
+
+`netscape_cookie_date` is not an HTTP-date. RFC 9110 admits IMF-fixdate, the RFC 850
+form (full day name, two digit year) and asctime, and the hyphenated form
+with an abbreviated day name and a four digit year is none of the three.
+
+If you come from cowboy, this is the shape that `cow_date:rfc2109/1` writes
+and `cow_cookie` puts in an `Expires` attribute. The `rfc2109` label is
+cowlib's, and it is what this format was called here until 1.0.0.
 
 ## Support
 

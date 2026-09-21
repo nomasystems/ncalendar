@@ -5,7 +5,7 @@ An OTP library for the manipulation of a binary representation of dates and
 times.
 
 Every function takes the format as its first argument, so the same call
-shape works across `iso8601`, `http_date` and `imf_fixdate`. Formats that
+shape works across `iso8601`, `netscape_cookie_date` and `imf_fixdate`. Formats that
 take options read them from a map, documented in each format module.
 """.
 
@@ -70,7 +70,7 @@ take options read them from a map, documented in each format module.
 %%%-----------------------------------------------------------------------------
 %% TYPES
 %%%-----------------------------------------------------------------------------
--type format() :: iso8601 | http_date | imf_fixdate.
+-type format() :: iso8601 | netscape_cookie_date | imf_fixdate.
 -type gregorian_seconds() :: non_neg_integer().
 -type opts() :: map().
 -type timezone() ::
@@ -363,8 +363,8 @@ timezones() ->
 %%%-----------------------------------------------------------------------------
 mod(iso8601) ->
     ncalendar_iso8601;
-mod(http_date) ->
-    ncalendar_http_date;
+mod(netscape_cookie_date) ->
+    ncalendar_netscape_cookie_date;
 mod(imf_fixdate) ->
     ncalendar_imf_fixdate;
 mod(Format) ->
