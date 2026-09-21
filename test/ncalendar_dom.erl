@@ -21,7 +21,7 @@
 %% EXTERNAL EXPORTS
 %%%-----------------------------------------------------------------------------
 format() ->
-    triq_dom:oneof([iso8601, http_date, imf_fixdate]).
+    triq_dom:oneof([iso8601, netscape_cookie_date, imf_fixdate]).
 
 opts(iso8601) ->
     ?LET(

@@ -1,11 +1,11 @@
--module(ncalendar_http_date).
+-module(ncalendar_netscape_cookie_date).
 
 -moduledoc """
-HTTP date format module.
+Netscape cookie date format module.
 
-Parses and emits the cookie date form of RFC 2109,
-`Mon, 19-May-2014 10:00:00 GMT`. The value is always GMT: a datetime read
-in another offset is converted before it is written.
+Parses and emits `Mon, 19-May-2014 10:00:00 GMT`, the `Expires` date of
+Netscape's original cookie proposal. The value is always GMT. RFC 6265
+Section 5.1.1 parses this shape.
 """.
 
 %%%-----------------------------------------------------------------------------
@@ -174,7 +174,7 @@ to_datetimezone(
         {RawDate, RawTime}, {millisecond, 0}, Timezone
     );
 to_datetimezone(Value) ->
-    erlang:throw({error, ncalendar_http_date, {unrecognized_value, Value}}).
+    erlang:throw({error, ncalendar_netscape_cookie_date, {unrecognized_value, Value}}).
 
 %%%-----------------------------------------------------------------------------
 %% INTERNAL FUNCTIONS
@@ -247,4 +247,4 @@ from_month(?DECEMBER) ->
 resolve_timezone_alias("GMT") ->
     ?GMT_TIMEZONE;
 resolve_timezone_alias(TZ) ->
-    erlang:throw({error, ncalendar_http_date, {unrecognized_timezone, TZ}}).
+    erlang:throw({error, ncalendar_netscape_cookie_date, {unrecognized_timezone, TZ}}).

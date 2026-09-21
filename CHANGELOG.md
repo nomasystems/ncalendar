@@ -9,8 +9,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The `http_date` format is now `netscape_cookie_date`, and its module
+  `ncalendar_http_date` is now `ncalendar_netscape_cookie_date`. It writes
+  `Mon, 19-May-2014 10:00:00 GMT`, the `Expires` date of Netscape's original
+  cookie proposal, which is not an HTTP-date: RFC 9110 Section 5.6.7 allows
+  only IMF-fixdate, the RFC 850 form and asctime, so the old name sent
+  callers to the wrong format for an HTTP header field. Use `imf_fixdate`
+  there. `rfc2109` was dropped as a name because that RFC does not define
+  the shape, it only notes it in Section 10.1.2, and `cookie_date` because
+  RFC 6265 Section 4.1.1 also asks a sender for an IMF-fixdate
 - Requires Erlang/OTP 27 or newer, for `-moduledoc` and `-doc`. OTP 25 and 26
   are no longer supported
+
+### Removed
+
+- The `http_date` format atom. Use `netscape_cookie_date` to read the
+  `Expires` of an old cookie, and `imf_fixdate` to write a date into an HTTP
+  header field. A call with `http_date` now throws
+  `{error, ncalendar, {unsupported_format, http_date}}`
 
 ## [0.3.1] - 2024-03-15
 
