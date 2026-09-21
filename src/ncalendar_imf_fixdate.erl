@@ -1,31 +1,29 @@
-%%% Copyright 2023 Nomasystems, S.L. http://www.nomasystems.com
-%%
-%% Licensed under the Apache License, Version 2.0 (the "License");
-%% you may not use this file except in compliance with the License.
-%% You may obtain a copy of the License at
-%%
-%%     http://www.apache.org/licenses/LICENSE-2.0
-%%
-%% Unless required by applicable law or agreed to in writing, software
-%% distributed under the License is distributed on an "AS IS" BASIS,
-%% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-%% See the License for the specific language governing permissions and
-%% limitations under the License
-%
-%% @doc <code>ncalendar</code>'s <code>imf-fixdate</code> format module.
 -module(ncalendar_imf_fixdate).
 
-%%% BEHAVIOURS
+-moduledoc """
+IMF fixdate format module.
+
+Parses and emits `Mon, 19 May 2014 10:00:00 GMT`, with the offset written
+as `GMT` or `hhmm` in the style of RFC 5322.
+""".
+
+%%%-----------------------------------------------------------------------------
+%% BEHAVIOURS
+%%%-----------------------------------------------------------------------------
 -behaviour(ncalendar_format).
 
-%%% FORMAT EXPORTS
+%%%-----------------------------------------------------------------------------
+%% FORMAT EXPORTS
+%%%-----------------------------------------------------------------------------
 -export([
     from_datetimezone/2,
     is_valid/2,
     to_datetimezone/1
 ]).
 
-%%% MACROS
+%%%-----------------------------------------------------------------------------
+%% MACROS
+%%%-----------------------------------------------------------------------------
 -define(JANUARY, "Jan").
 -define(FEBRARY, "Feb").
 -define(MARCH, "Mar").
@@ -40,10 +38,13 @@
 -define(DECEMBER, "Dec").
 
 %%%-----------------------------------------------------------------------------
-%%% FORMAT EXPORTS
+%% FORMAT EXPORTS
 %%%-----------------------------------------------------------------------------
-%% @private
-%% @doc Converts a <code>datetimezone()</code> value to an <code>imf-fixdate</code> binary.
+-doc false.
+-spec from_datetimezone(Datetimezone, Opts) -> Result when
+    Datetimezone :: ncalendar_format:datetimezone(),
+    Opts :: ncalendar:opts(),
+    Result :: ncalendar:value().
 from_datetimezone({Datetime, Subseconds, <<"GMT">>}, Opts) ->
     from_datetimezone({Datetime, Subseconds, +0000}, Opts);
 from_datetimezone({_Datetime, _Subseconds, Timezone} = Datetimezone, _Opts) ->
@@ -68,8 +69,11 @@ from_datetimezone({_Datetime, _Subseconds, Timezone} = Datetimezone, _Opts) ->
         format_timezone(Timezone)
     ]).
 
-%% @private
-%% @doc Checks if a value is a valid <code>imf-fixdate</code> datetime.
+-doc false.
+-spec is_valid(Value, Opts) -> Result when
+    Value :: ncalendar:value() | string(),
+    Opts :: ncalendar:opts(),
+    Result :: boolean().
 is_valid(Value, Opts) when is_binary(Value) ->
     is_valid(erlang:binary_to_list(Value), Opts);
 is_valid(
@@ -124,8 +128,10 @@ is_valid(
 is_valid(_Value, _Opts) ->
     false.
 
-%% @private
-%% @doc Converts an <code>imf-fixdate</code> binary to a <code>datetimezone()</code> value.
+-doc false.
+-spec to_datetimezone(Value) -> Result when
+    Value :: ncalendar:value() | string(),
+    Result :: ncalendar_format:datetimezone().
 to_datetimezone(Value) when is_binary(Value) ->
     to_datetimezone(erlang:binary_to_list(Value));
 to_datetimezone(
@@ -170,7 +176,7 @@ to_datetimezone(Value) ->
     erlang:throw({error, ncalendar_imf_fixdate, {unrecognized_value, Value}}).
 
 %%%-----------------------------------------------------------------------------
-%%% INTERNAL FUNCTIONS
+%% INTERNAL FUNCTIONS
 %%%-----------------------------------------------------------------------------
 do_format_timezone(undefined) ->
     <<>>;

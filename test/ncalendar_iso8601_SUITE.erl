@@ -1,22 +1,30 @@
-%%% Copyright 2023 Nomasystems, S.L. http://www.nomasystems.com
-%%
-%% Licensed under the Apache License, Version 2.0 (the "License");
-%% you may not use this file except in compliance with the License.
-%% You may obtain a copy of the License at
-%%
-%%     http://www.apache.org/licenses/LICENSE-2.0
-%%
-%% Unless required by applicable law or agreed to in writing, software
-%% distributed under the License is distributed on an "AS IS" BASIS,
-%% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-%% See the License for the specific language governing permissions and
-%% limitations under the License.
 -module(ncalendar_iso8601_SUITE).
 
-%%% EXTERNAL EXPORTS
--compile([export_all, nowarn_export_all]).
+-moduledoc "Test suite for the `ncalendar_iso8601` format module.".
 
-%%% MACROS
+%%%-----------------------------------------------------------------------------
+%% CT CALLBACKS
+%%%-----------------------------------------------------------------------------
+-export([all/0]).
+
+%%%-----------------------------------------------------------------------------
+%% TEST CASES
+%%%-----------------------------------------------------------------------------
+-export([
+    from_datetimezone/1,
+    from_datetimezone_ms/1,
+    from_datetimezone_ext/1,
+    from_datetimezone_ext_ms/1,
+    is_valid/1,
+    is_valid_ms/1,
+    is_valid_ext/1,
+    is_valid_ext_ms/1,
+    to_datetimezone/1
+]).
+
+%%%-----------------------------------------------------------------------------
+%% MACROS
+%%%-----------------------------------------------------------------------------
 -define(DATETIMEZONE_1, {{{2014, 5, 19}, {10, 0, 0}}, {millisecond, 0}, <<"Z">>}).
 -define(DATETIMEZONE_2, {{{2014, 5, 19}, {12, 0, 0}}, {millisecond, 30}, +0000}).
 -define(DATETIMEZONE_3, {{{2014, 5, 31}, {21, 0, 0}}, {millisecond, 30}, +1100}).
@@ -26,7 +34,7 @@
 -define(OPTS_EXT_MS, #{precision => millisecond, extended => true}).
 
 %%%-----------------------------------------------------------------------------
-%%% SUITE EXPORTS
+%% SUITE EXPORTS
 %%%-----------------------------------------------------------------------------
 all() ->
     [
@@ -42,19 +50,7 @@ all() ->
     ].
 
 %%%-----------------------------------------------------------------------------
-%%% INIT SUITE EXPORTS
-%%%-----------------------------------------------------------------------------
-init_per_suite(Conf) ->
-    nct_util:setup_suite(Conf).
-
-%%%-----------------------------------------------------------------------------
-%%% END SUITE EXPORTS
-%%%-----------------------------------------------------------------------------
-end_per_suite(Conf) ->
-    nct_util:teardown_suite(Conf).
-
-%%%-----------------------------------------------------------------------------
-%%% TEST CASES
+%% TEST CASES
 %%%-----------------------------------------------------------------------------
 from_datetimezone(_Conf) ->
     Opts = ?OPTS_DEFAULT,
