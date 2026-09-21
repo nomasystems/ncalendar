@@ -3,29 +3,9 @@
 -moduledoc """
 Netscape cookie date format module.
 
-Parses and emits `Mon, 19-May-2014 10:00:00 GMT`: an abbreviated day name,
-a day, month and four digit year joined by hyphens, and GMT.
-
-This is the date that Netscape's original cookie proposal gave to the
-`Expires` attribute. No RFC defines it. RFC 2109 dropped `Expires` for
-`Max-Age` and only records the shape in Section 10.1.2, as a note on what
-the Netscape proposal used, written there with a two digit year. RFC 6265
-brought `Expires` back in Section 4.1.1 and asks for an IMF-fixdate
-instead, while its Section 5.1.1 parsing algorithm still accepts this one,
-which is why it survives on the wire.
-
-It is not an HTTP-date either: RFC 9110 Section 5.6.7 admits IMF-fixdate,
-the RFC 850 form (full day name, two digit year) and asctime, and this
-matches none of them.
-
-So use it to read the `Expires` of an old cookie, and use
-`ncalendar_imf_fixdate` to write a date into any HTTP header field.
-
-In cowboy this same shape is `cow_date:rfc2109/1`, which `cow_cookie` writes
-into an `Expires` attribute.
-
-The value is always GMT, so a datetime read in another offset is converted
-before it is written.
+Parses and emits `Mon, 19-May-2014 10:00:00 GMT`, the `Expires` date of
+Netscape's original cookie proposal. The value is always GMT. RFC 6265
+Section 5.1.1 parses this shape.
 """.
 
 %%%-----------------------------------------------------------------------------
