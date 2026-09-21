@@ -1,52 +1,60 @@
-%%% Copyright 2022 Nomasystems, S.L. http://www.nomasystems.com
-%%
-%% Licensed under the Apache License, Version 2.0 (the "License");
-%% you may not use this file except in compliance with the License.
-%% You may obtain a copy of the License at
-%%
-%%     http://www.apache.org/licenses/LICENSE-2.0
-%%
-%% Unless required by applicable law or agreed to in writing, software
-%% distributed under the License is distributed on an "AS IS" BASIS,
-%% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-%% See the License for the specific language governing permissions and
-%% limitations under the License
-%
-%% @doc <code>ncalendar</code>'s <code>ISO 8601</code> format module.
 -module(ncalendar_iso8601).
 
-%%% BEHAVIOURS
+-moduledoc """
+ISO 8601 format module.
+
+Parses and emits the basic form `20140519T100000Z` and, with
+`#{extended => true}`, the extended form `2014-05-19T10:00:00Z`. Both
+forms take an optional `.mmm` subsecond part with
+`#{precision => millisecond}`, and an offset written as `Z` or `hhmm`.
+""".
+
+%%%-----------------------------------------------------------------------------
+%% BEHAVIOURS
+%%%-----------------------------------------------------------------------------
 -behaviour(ncalendar_format).
 
-%%% FORMAT EXPORTS
+%%%-----------------------------------------------------------------------------
+%% FORMAT EXPORTS
+%%%-----------------------------------------------------------------------------
 -export([
     from_datetimezone/2,
     is_valid/2,
     to_datetimezone/1
 ]).
 
-%%% EXTERNAL EXPORTS
+%%%-----------------------------------------------------------------------------
+%% API EXPORTS
+%%%-----------------------------------------------------------------------------
 -export([
     format_timezone/1
 ]).
 
-%%% TYPES
+%%%-----------------------------------------------------------------------------
+%% TYPES
+%%%-----------------------------------------------------------------------------
+-doc "Options for the `iso8601` format.".
 -type opts() :: #{precision => precision(), extended => boolean()}.
-% Options for the <code>iso8601</code> format.
--type precision() :: millisecond.
-% Subsecond time precision level.
 
-%%% EXPORT TYPES
+-doc "Subsecond time precision level.".
+-type precision() :: millisecond.
+
+%%%-----------------------------------------------------------------------------
+%% TYPE EXPORTS
+%%%-----------------------------------------------------------------------------
 -export_type([
     opts/0,
     precision/0
 ]).
 
 %%%-----------------------------------------------------------------------------
-%%% FORMAT EXPORTS
+%% FORMAT EXPORTS
 %%%-----------------------------------------------------------------------------
-%% @private
-%% @doc Converts a <code>datetimezone()</code> value to an <code>iso8601</code> binary.
+-doc false.
+-spec from_datetimezone(Datetimezone, Opts) -> Result when
+    Datetimezone :: ncalendar_format:datetimezone(),
+    Opts :: opts(),
+    Result :: ncalendar:value().
 from_datetimezone({Datetime, Subseconds, <<"Z">>}, Opts) ->
     from_datetimezone({Datetime, Subseconds, +0000}, Opts);
 %% Extended Milliseconds
@@ -118,8 +126,11 @@ from_datetimezone({_Datetime, _Subseconds, Timezone} = Datetimezone, _Opts) ->
         format_timezone(Timezone)
     ]).
 
-%% @private
-%% @doc Checks if a value is a valid <code>iso8601</code> datetime.
+-doc false.
+-spec is_valid(Value, Opts) -> Result when
+    Value :: ncalendar:value() | string(),
+    Opts :: opts(),
+    Result :: boolean().
 is_valid(Value, Opts) when is_binary(Value) ->
     is_valid(erlang:binary_to_list(Value), Opts);
 %% Extended Milliseconds
@@ -270,8 +281,10 @@ is_valid([Y1, Y2, Y3, Y4, Mo1, Mo2, D1, D2, $T, H1, H2, Mi1, Mi2, S1, S2 | TZ], 
 is_valid(_Value, _Opts) ->
     false.
 
-%% @private
-%% @doc Converts an <code>iso8601</code> binary to a <code>datetimezone()</code> value.
+-doc false.
+-spec to_datetimezone(Value) -> Result when
+    Value :: ncalendar:value() | string(),
+    Result :: ncalendar_format:datetimezone().
 to_datetimezone(Value) when is_binary(Value) ->
     to_datetimezone(erlang:binary_to_list(Value));
 %% Extended Milliseconds
@@ -339,12 +352,12 @@ to_datetimezone(Value) ->
     erlang:throw({error, ncalendar_iso8601, {unrecognized_value, Value}}).
 
 %%%-----------------------------------------------------------------------------
-%%% EXTERNAL EXPORTS
+%% API EXPORTS
 %%%-----------------------------------------------------------------------------
 -spec format_timezone(Timezone) -> Binary when
     Timezone :: ncalendar:timezone(),
     Binary :: binary().
-%% @doc Formats a timezone to a binary in <code>iso8601</code> format.
+-doc "Formats a timezone to a binary in `iso8601` format.".
 format_timezone(Timezone) ->
     case ncalendar_util:is_valid_timezone(Timezone) of
         true ->
@@ -354,7 +367,7 @@ format_timezone(Timezone) ->
     end.
 
 %%%-----------------------------------------------------------------------------
-%%% INTERNAL FUNCTIONS
+%% INTERNAL FUNCTIONS
 %%%-----------------------------------------------------------------------------
 do_format_timezone(undefined) ->
     <<>>;

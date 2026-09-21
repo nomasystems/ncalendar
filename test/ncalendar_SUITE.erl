@@ -1,31 +1,47 @@
-%%% Copyright 2022 Nomasystems, S.L. http://www.nomasystems.com
-%%
-%% Licensed under the Apache License, Version 2.0 (the "License");
-%% you may not use this file except in compliance with the License.
-%% You may obtain a copy of the License at
-%%
-%%     http://www.apache.org/licenses/LICENSE-2.0
-%%
-%% Unless required by applicable law or agreed to in writing, software
-%% distributed under the License is distributed on an "AS IS" BASIS,
-%% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-%% See the License for the specific language governing permissions and
-%% limitations under the License.
 -module(ncalendar_SUITE).
 
-%%% INCLUDE FILES
+-moduledoc "Test suite for the `ncalendar` API across every supported format.".
+
+%%%-----------------------------------------------------------------------------
+%% INCLUDE FILES
+%%%-----------------------------------------------------------------------------
 -include_lib("stdlib/include/assert.hrl").
 
-%%% EXTERNAL EXPORTS
--compile([export_all, nowarn_export_all]).
+%%%-----------------------------------------------------------------------------
+%% CT CALLBACKS
+%%%-----------------------------------------------------------------------------
+-export([
+    all/0,
+    groups/0,
+    init_per_suite/1,
+    end_per_suite/1
+]).
 
-%%% MACROS
+%%%-----------------------------------------------------------------------------
+%% TEST CASES
+%%%-----------------------------------------------------------------------------
+-export([
+    convert/1,
+    convert_without_tz/1,
+    datetime/1,
+    gregorian_seconds/1,
+    now/1,
+    posix_time/1,
+    shift_timezone/1,
+    there_and_back_again/1,
+    timestamp/1,
+    timezone/1
+]).
+
+%%%-----------------------------------------------------------------------------
+%% MACROS
+%%%-----------------------------------------------------------------------------
 -define(OPTS_MS, #{precision => millisecond}).
 -define(OPTS_EXT, #{extended => true}).
 -define(OPTS_EXT_MS, #{precision => millisecond, extended => true}).
 
 %%%-----------------------------------------------------------------------------
-%%% SUITE EXPORTS
+%% SUITE EXPORTS
 %%%-----------------------------------------------------------------------------
 all() ->
     [
@@ -49,36 +65,19 @@ groups() ->
     ].
 
 %%%-----------------------------------------------------------------------------
-%%% INIT SUITE EXPORTS
+%% INIT SUITE EXPORTS
 %%%-----------------------------------------------------------------------------
 init_per_suite(Conf) ->
-    Config = nct_util:setup_suite(Conf),
-    ct_property_test:init_per_suite(Config).
+    ct_property_test:init_per_suite(Conf).
 
 %%%-----------------------------------------------------------------------------
-%%% END SUITE EXPORTS
+%% END SUITE EXPORTS
 %%%-----------------------------------------------------------------------------
 end_per_suite(Conf) ->
-    nct_util:teardown_suite(Conf).
-
-%%%-----------------------------------------------------------------------------
-%%% INIT CASE EXPORTS
-%%%-----------------------------------------------------------------------------
-init_per_testcase(Case, Conf) ->
-    ct:print("Starting test case ~p", [Case]),
-    nct_util:init_traces(Case),
     Conf.
 
 %%%-----------------------------------------------------------------------------
-%%% END CASE EXPORTS
-%%%-----------------------------------------------------------------------------
-end_per_testcase(Case, Conf) ->
-    nct_util:end_traces(Case),
-    ct:print("Test case ~p completed", [Case]),
-    Conf.
-
-%%%-----------------------------------------------------------------------------
-%%% TEST CASES
+%% TEST CASES
 %%%-----------------------------------------------------------------------------
 there_and_back_again(Conf) ->
     ct_property_test:quickcheck(

@@ -1,30 +1,28 @@
-%%% Copyright 2022 Nomasystems, S.L. http://www.nomasystems.com
-%%
-%% Licensed under the Apache License, Version 2.0 (the "License");
-%% you may not use this file except in compliance with the License.
-%% You may obtain a copy of the License at
-%%
-%%     http://www.apache.org/licenses/LICENSE-2.0
-%%
-%% Unless required by applicable law or agreed to in writing, software
-%% distributed under the License is distributed on an "AS IS" BASIS,
-%% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-%% See the License for the specific language governing permissions and
-%% limitations under the License
-%
-%% @private
-%% @doc Behaviour for <code>ncalendar</code> format modules.
 -module(ncalendar_format).
 
-%%% TYPES
+-moduledoc false.
+
+%%%-----------------------------------------------------------------------------
+%% TYPES
+%%%-----------------------------------------------------------------------------
+-doc """
+A datetime, its subsecond part, and the timezone it was read from or is
+written to.
+
+The datetime is always UTC, except when the timezone is `undefined`, where
+it is the wall clock of the value itself.
+""".
 -type datetimezone() :: {
     calendar:datetime(), sub_seconds(), ncalendar:timezone() | ncalendar:timezone_alias()
 }.
-% Datetime is: UTC time | local time (if no timezone is specified).
+
 -type milliseconds() :: non_neg_integer().
+
 -type sub_seconds() :: {millisecond, milliseconds()}.
 
-%%% EXPORT TYPES
+%%%-----------------------------------------------------------------------------
+%% TYPE EXPORTS
+%%%-----------------------------------------------------------------------------
 -export_type([
     datetimezone/0,
     milliseconds/0,
@@ -32,21 +30,21 @@
 ]).
 
 %%%-----------------------------------------------------------------------------
-%%% BEHAVIOUR CALLBACKS
+%% BEHAVIOUR CALLBACKS
 %%%-----------------------------------------------------------------------------
+-doc "Converts a `t:datetimezone/0` value to a binary in the implementer format.".
 -callback from_datetimezone(Datetimezone, Opts) -> Result when
     Datetimezone :: datetimezone(),
     Opts :: map(),
     Result :: ncalendar:value().
-% Converts a <code>datetimezone()</code> value to a binary representation of the implementer format.
 
+-doc "Checks if a value is a valid datetime in the implementer format.".
 -callback is_valid(Value, Opts) -> Result when
     Value :: ncalendar:value(),
     Opts :: map(),
     Result :: boolean().
-% Checks if a value is a valid datetime in the implementer format.
 
+-doc "Converts a binary in the implementer format to a `t:datetimezone/0` value.".
 -callback to_datetimezone(Value) -> Result when
     Value :: ncalendar:value(),
     Result :: datetimezone().
-% Converts a binary representation of the implementer format to a <code>datetimezone()</code> value.

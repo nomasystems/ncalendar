@@ -37,7 +37,6 @@ Add `ncalendar` to your project dependencies.
 | `ncalendar:now/2` | Generates a binary representation of the current datetime in the given format and timezone |
 | `ncalendar:now/3` | Generates a binary representation of the current datetime in the given format, format opts and timezone |
 | `ncalendar:timezone/2` | Returns the timezone of the given binary representation and format |
-| `ncalendar:timezone/3` | Returns the timezone of the given binary representation, format and format opts |
 | `ncalendar:to_datetime/2` | Converts a binary representation of a datetime in the given format to a `calendar:datetime()` value |
 | `ncalendar:to_gregorian_seconds/2` | Converts a binary representation of a datetime in the given format to the integer value of gregorian seconds |
 | `ncalendar:to_posix_time/2` | Converts a binary representation of a datetime in the given format to a POSIX time value (seconds since Epoch) |

@@ -1,25 +1,15 @@
-%%% Copyright 2022 Nomasystems, S.L. http://www.nomasystems.com
-%%
-%% Licensed under the Apache License, Version 2.0 (the "License");
-%% you may not use this file except in compliance with the License.
-%% You may obtain a copy of the License at
-%%
-%%     http://www.apache.org/licenses/LICENSE-2.0
-%%
-%% Unless required by applicable law or agreed to in writing, software
-%% distributed under the License is distributed on an "AS IS" BASIS,
-%% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-%% See the License for the specific language governing permissions and
-%% limitations under the License
-%
-%% @private
-%% @doc Utility functions for <code>ncalendar</code>.
 -module(ncalendar_util).
 
-%%% INCLUDE FILES
+-moduledoc false.
+
+%%%-----------------------------------------------------------------------------
+%% INCLUDE FILES
+%%%-----------------------------------------------------------------------------
 -include("ncalendar.hrl").
 
-%%% EXTERNAL EXPORTS
+%%%-----------------------------------------------------------------------------
+%% API EXPORTS
+%%%-----------------------------------------------------------------------------
 -export([
     datetime_to_datetimezone/3,
     datetimezone_to_datetime/1,
@@ -36,11 +26,13 @@
     to_timezone/1
 ]).
 
-%%% MACROS
+%%%-----------------------------------------------------------------------------
+%% MACROS
+%%%-----------------------------------------------------------------------------
 -define(JANUARY_1ST_1970, 62167219200).
 
 %%%-----------------------------------------------------------------------------
-%%% EXTERNAL EXPORTS
+%% API EXPORTS
 %%%-----------------------------------------------------------------------------
 -spec datetime_to_datetimezone(Datetime, Subseconds, Timezone) -> Result when
     Datetime :: calendar:datetime(),
@@ -176,7 +168,7 @@ to_timezone(TimezoneList) ->
     erlang:list_to_integer(TimezoneList).
 
 %%%-----------------------------------------------------------------------------
-%%% INTERNAL FUNCTIONS
+%% INTERNAL FUNCTIONS
 %%%-----------------------------------------------------------------------------
 -spec timezone_diff(Timezone) -> Result when
     Timezone :: ncalendar:timezone(),

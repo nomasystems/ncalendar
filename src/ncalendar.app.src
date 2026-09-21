@@ -4,5 +4,12 @@
     {vsn, "0.3.1"},
     {registered, []},
     {applications, [kernel, stdlib]},
-    {env, []}
+    {env, []},
+    {modules, []},
+    {licenses, ["Apache-2.0"]},
+    {maintainers, ["Nomasystems"]},
+    {minimum_otp_vsn, "27"},
+    {links, [
+        {"GitHub", "https://github.com/nomasystems/ncalendar"}
+    ]}
 ]}.
