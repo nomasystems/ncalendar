@@ -44,9 +44,9 @@ take options read them from a map, documented in each format module.
 %% UTIL EXPORTS
 %%%-----------------------------------------------------------------------------
 -export([
-    timezones/0,
     shift_timezone/3,
-    shift_timezone/4
+    shift_timezone/4,
+    timezones/0
 ]).
 
 %%%-----------------------------------------------------------------------------
@@ -54,6 +54,17 @@ take options read them from a map, documented in each format module.
 %%%-----------------------------------------------------------------------------
 -export_type([
     gregorian_seconds/0
+]).
+
+%%%-----------------------------------------------------------------------------
+%% TYPE EXPORTS
+%%%-----------------------------------------------------------------------------
+-export_type([
+    format/0,
+    opts/0,
+    timezone/0,
+    timezone_alias/0,
+    value/0
 ]).
 
 %%%-----------------------------------------------------------------------------
@@ -109,17 +120,6 @@ take options read them from a map, documented in each format module.
 -type timezone_alias() :: binary().
 -type posix_time() :: non_neg_integer().
 -type value() :: binary().
-
-%%%-----------------------------------------------------------------------------
-%% TYPE EXPORTS
-%%%-----------------------------------------------------------------------------
--export_type([
-    format/0,
-    opts/0,
-    timezone/0,
-    timezone_alias/0,
-    value/0
-]).
 
 %%%-----------------------------------------------------------------------------
 %% MACROS
@@ -326,12 +326,6 @@ to_timestamp(Format, Value) ->
 %%%-----------------------------------------------------------------------------
 %% UTIL EXPORTS
 %%%-----------------------------------------------------------------------------
--spec timezones() -> Result when
-    Result :: [timezone()].
--doc "Returns a list of all supported timezones.".
-timezones() ->
-    ?TIMEZONES.
-
 -spec shift_timezone(Format, Value, Timezone) -> Result when
     Format :: format(),
     Value :: value(),
@@ -357,6 +351,12 @@ shift_timezone(Format, Value, Timezone, Opts) ->
             {Datetime, Subseconds, _Timezone} = Mod:to_datetimezone(Value),
             Mod:from_datetimezone({Datetime, Subseconds, Timezone}, Opts)
     end.
+
+-spec timezones() -> Result when
+    Result :: [timezone()].
+-doc "Returns a list of all supported timezones.".
+timezones() ->
+    ?TIMEZONES.
 
 %%%-----------------------------------------------------------------------------
 %% INTERNAL FUNCTIONS
