@@ -138,7 +138,9 @@ pad(4, N) ->
 -spec timestamp_to_milliseconds(Timestamp) -> Result when
     Timestamp :: erlang:timestamp(),
     Result :: non_neg_integer().
-timestamp_to_milliseconds({MSecs, Secs, MicroSecs}) ->
+timestamp_to_milliseconds({MSecs, Secs, MicroSecs}) when
+    is_integer(MSecs), is_integer(Secs), is_integer(MicroSecs)
+->
     MilliSecs = MicroSecs div 1000,
     GregorianSeconds = MSecs * 1000000 + Secs + ?JANUARY_1ST_1970,
     GregorianSeconds * 1000 + MilliSecs.
